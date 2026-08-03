@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { LeadSource } from "@prisma/client";
+type LeadSource = "WEBSITE" | "WHATSAPP" | "LTPE" | "REFERRAL" | "GOOGLE" | "MANUAL" | "DIRECT_CALL";
 import { memoryEnquiries } from "@/lib/memory-store";
 
 export async function POST(request: NextRequest) {
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
           email: email || undefined,
           currentClass: currentClass || undefined,
           interestedCourse: course || "General Enquiry",
-          leadSource: (leadSource as LeadSource) || LeadSource.WEBSITE,
+          leadSource: (leadSource as any) || "WEBSITE",
           status: "NEW",
         },
       });
