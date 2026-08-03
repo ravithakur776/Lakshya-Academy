@@ -92,11 +92,12 @@ export const defaultMetadata: Metadata = {
   manifest: "/manifest.json",
   icons: {
     icon: [
-      { url: "/favicon.ico" },
-      { url: "/icons/icon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/icons/icon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/logo.png", type: "image/png" },
+      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico", type: "image/x-icon" },
     ],
-    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
+    shortcut: ["/logo.png"],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 
