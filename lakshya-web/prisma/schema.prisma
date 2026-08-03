@@ -1,0 +1,612 @@
+// ═══════════════════════════════════════════════════════════
+// Lakshya Academy — Production Prisma Schema
+// PostgreSQL + Supabase
+// ═══════════════════════════════════════════════════════════
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────────────────────
+
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+  COUNSELLOR
+  FACULTY
+}
+
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+  PASSED_OUT
+  DROPPED
+  SUSPENDED
+}
+
+enum EnquiryStatus {
+  NEW
+  INTERESTED
+  CALLBACK
+  ADMISSION_DONE
+  LOST
+  NOT_INTERESTED
+}
+
+enum LeadSource {
+  WEBSITE
+  WHATSAPP
+  PHONE_CALL
+  WALK_IN
+  SOCIAL_MEDIA
+  REFERRAL
+  ADVERTISEMENT
+  GOOGLE
+  LTPE
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  PARTIAL
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+}
+
+enum NoticeType {
+  GENERAL
+  URGENT
+  EXAM
+  HOLIDAY
+  RESULT
+}
+
+// ─────────────────────────────────────────────────────────────
+// ADMIN / AUTH
+// ─────────────────────────────────────────────────────────────
+
+/// Admin user — synced with Supabase Auth
+model AdminUser {
+  id          String    @id @default(cuid())
+  supabaseId  String    @unique @map("supabase_id")
+  email       String    @unique
+  name        String
+  phone       String?
+  role        AdminRole @default(COUNSELLOR)
+  avatarUrl   String?   @map("avatar_url")
+  department  String?
+  isActive    Boolean   @default(true) @map("is_active")
+  lastLoginAt DateTime? @map("last_login_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  enquiriesAssigned Enquiry[]     @relation("CounsellorEnquiries")
+  activityLogs      ActivityLog[]
+  blogPosts         BlogPost[]
+  followUps         FollowUp[]
+
+  @@map("admin_users")
+}
+
+// ─────────────────────────────────────────────────────────────
+// STUDENTS
+// ─────────────────────────────────────────────────────────────
+
+/// Student record — complete profile
+model Student {
+  id             String        @id @default(cuid())
+  registrationNo String        @unique @map("registration_no")
+
+  // Personal Info
+  name           String
+  photoUrl       String?       @map("photo_url")
+  dateOfBirth    DateTime?     @map("date_of_birth")
+  gender         String? // "male" | "female" | "other"
+
+  // Academic Info
+  currentClass  String  @map("current_class") // "8","9","10","11","12","Dropper"
+  targetExam    String? @map("target_exam") // "JEE_ADVANCED","JEE_MAINS","NEET"
+  targetYear    Int?    @map("target_year")
+  school        String?
+
+  // Course
+  courseId String? @map("course_id")
+
+  // Parent Info
+  fatherName       String? @map("father_name")
+  motherName       String? @map("mother_name")
+  parentName       String? @map("parent_name") // Primary contact
+  parentPhone      String? @map("parent_phone")
+  parentWhatsapp   String? @map("parent_whatsapp")
+  parentEmail      String? @map("parent_email")
+  parentOccupation String? @map("parent_occupation")
+
+  // Contact
+  phone    String?
+  whatsapp String?
+  email    String? @unique
+
+  // Address
+  address String?
+  city    String?
+  state   String?
+  pincode String?
+
+  // Admission
+  admissionDate DateTime      @default(now()) @map("admission_date")
+  status        StudentStatus @default(ACTIVE)
+  remarks       String?
+
+  // Documents (stored as JSON array of Supabase URLs)
+  documents Json? @default("[]")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  course       Course?       @relation(fields: [courseId], references: [id])
+  enquiry      Enquiry?      @relation("EnquiryToStudent")
+  payments     Payment[]
+  activityLogs ActivityLog[]
+
+  @@index([currentClass])
+  @@index([status])
+  @@index([admissionDate])
+  @@map("students")
+}
+
+// ─────────────────────────────────────────────────────────────
+// COURSES
+// ─────────────────────────────────────────────────────────────
+
+model Course {
+  id           String    @id @default(cuid())
+  name         String
+  slug         String    @unique
+  shortName    String?   @map("short_name")
+  description  String?
+  targetClass  String    @map("target_class") // "11-12", "8-10", "Dropper"
+  targetExam   String?   @map("target_exam")
+  duration     String?
+  fee          Decimal?  @db.Decimal(10, 2)
+  seats        Int       @default(30)
+  startDate    DateTime? @map("start_date")
+  isActive     Boolean   @default(true) @map("is_active")
+  isFeatured   Boolean   @default(false) @map("is_featured")
+  thumbnailUrl String?   @map("thumbnail_url")
+  sortOrder    Int       @default(0) @map("sort_order")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  students  Student[]
+  enquiries Enquiry[]
+  faculty   Faculty[]   @relation("CourseFaculty")
+  payments  Payment[]
+
+  @@map("courses")
+}
+
+// ─────────────────────────────────────────────────────────────
+// FACULTY
+// ─────────────────────────────────────────────────────────────
+
+model Faculty {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  subject         String
+  subjects        String[] // ["Physics", "Mechanics"]
+  qualification   String?
+  experience      String? // "12 Years"
+  experienceYears Int      @default(0) @map("experience_years")
+  bio             String?
+  philosophy      String?
+  photoUrl        String?  @map("photo_url")
+  email           String?  @unique
+  phone           String?
+  rating          Float    @default(5.0)
+  studentsCoached Int      @default(0) @map("students_coached")
+  topRankers      Int      @default(0) @map("top_rankers")
+  isActive        Boolean  @default(true) @map("is_active")
+  isVisible       Boolean  @default(true) @map("is_visible")
+  sortOrder       Int      @default(0) @map("sort_order")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  courses Course[] @relation("CourseFaculty")
+
+  @@map("faculty")
+}
+
+// ─────────────────────────────────────────────────────────────
+// ENQUIRIES / CRM
+// ─────────────────────────────────────────────────────────────
+
+/// Enquiry / Lead from prospective students
+model Enquiry {
+  id        String @id @default(cuid())
+  enquiryNo String @unique @default(cuid()) @map("enquiry_no")
+
+  // Student Info
+  studentName  String  @map("student_name")
+  parentName   String? @map("parent_name")
+  phone        String
+  whatsapp     String?
+  email        String?
+  currentClass String? @map("current_class")
+  school       String?
+  city         String?
+
+  // Lead Details
+  interestedCourse String?       @map("interested_course")
+  courseId         String?       @map("course_id")
+  leadSource       LeadSource    @default(WEBSITE) @map("lead_source")
+  status           EnquiryStatus @default(NEW)
+  priority         String        @default("NORMAL") // "LOW","NORMAL","HIGH"
+
+  // Assignment
+  counsellorId String?   @map("counsellor_id")
+  followUpAt   DateTime? @map("follow_up_at")
+  convertedAt  DateTime? @map("converted_at")
+
+  // Conversion
+  studentId String? @unique @map("student_id")
+
+  // Notes
+  remarks       String?
+  internalNotes String? @map("internal_notes")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  counsellor AdminUser? @relation("CounsellorEnquiries", fields: [counsellorId], references: [id])
+  course     Course?    @relation(fields: [courseId], references: [id])
+  student    Student?   @relation("EnquiryToStudent", fields: [studentId], references: [id])
+  followUps  FollowUp[]
+
+  @@index([status])
+  @@index([counsellorId])
+  @@index([createdAt])
+  @@map("enquiries")
+}
+
+/// Follow-up log for enquiries
+model FollowUp {
+  id           String    @id @default(cuid())
+  enquiryId    String    @map("enquiry_id")
+  adminId      String    @map("admin_id")
+  notes        String
+  nextFollowUp DateTime? @map("next_follow_up")
+  outcome      String? // "Interested", "Not Available", "Callback Requested"
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  enquiry Enquiry   @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  admin   AdminUser @relation(fields: [adminId], references: [id])
+
+  @@index([enquiryId])
+  @@map("follow_ups")
+}
+
+// ─────────────────────────────────────────────────────────────
+// LTPE
+// ─────────────────────────────────────────────────────────────
+
+model LtpeRegistration {
+  id             String    @id @default(cuid())
+  registrationNo String    @unique @map("registration_no")
+
+  // Student
+  studentName  String    @map("student_name")
+  dateOfBirth  DateTime? @map("date_of_birth")
+  gender       String?
+  currentClass String    @map("current_class")
+  school       String?
+  city         String?
+
+  // Parent
+  parentName  String  @map("parent_name")
+  parentPhone String  @map("parent_phone")
+  parentEmail String? @map("parent_email")
+
+  // Exam
+  examCenter     String?   @map("exam_center")
+  examDate       DateTime? @map("exam_date")
+  hallTicketSent Boolean   @default(false) @map("hall_ticket_sent")
+  appeared       Boolean   @default(false)
+
+  // Results
+  score          Float?
+  rank           Int?
+  scholarship    String? // "25%","50%","75%","100%"
+  certificateUrl String? @map("certificate_url")
+
+  // Conversion
+  admissionTaken   Boolean @default(false) @map("admission_taken")
+  preparationLevel String? @map("preparation_level")
+  previousAttempt  Boolean @default(false) @map("previous_attempt")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([currentClass])
+  @@index([createdAt])
+  @@map("ltpe_registrations")
+}
+
+// ─────────────────────────────────────────────────────────────
+// PAYMENTS
+// ─────────────────────────────────────────────────────────────
+
+model Payment {
+  id            String        @id @default(cuid())
+  studentId     String        @map("student_id")
+  courseId      String?       @map("course_id")
+  amount        Decimal       @db.Decimal(10, 2)
+  status        PaymentStatus @default(PENDING)
+  method        String? // "Cash","UPI","NEFT","Cheque"
+  transactionId String?       @map("transaction_id")
+  receiptNo     String?       @unique @map("receipt_no")
+  dueDate       DateTime?     @map("due_date")
+  paidAt        DateTime?     @map("paid_at")
+  notes         String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  student Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course  Course?  @relation(fields: [courseId], references: [id])
+
+  @@map("payments")
+}
+
+// ─────────────────────────────────────────────────────────────
+// BLOG
+// ─────────────────────────────────────────────────────────────
+
+model BlogCategory {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  slug      String     @unique
+  color     String     @default("#10b981")
+  sortOrder Int        @default(0) @map("sort_order")
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  posts BlogPost[]
+
+  @@map("blog_categories")
+}
+
+model BlogPost {
+  id              String     @id @default(cuid())
+  title           String
+  slug            String     @unique
+  excerpt         String?
+  content         String // Rich text / Markdown
+  coverImageUrl   String?    @map("cover_image_url")
+  categoryId      String?    @map("category_id")
+  status          BlogStatus @default(DRAFT)
+  tags            String[]
+  seoTitle        String?    @map("seo_title")
+  metaDescription String?    @map("meta_description")
+  authorId        String     @map("author_id")
+  publishedAt     DateTime?  @map("published_at")
+  views           Int        @default(0)
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  category BlogCategory? @relation(fields: [categoryId], references: [id])
+  author   AdminUser     @relation(fields: [authorId], references: [id])
+
+  @@index([status])
+  @@index([publishedAt])
+  @@map("blog_posts")
+}
+
+// ─────────────────────────────────────────────────────────────
+// MEDIA LIBRARY
+// ─────────────────────────────────────────────────────────────
+
+model MediaFile {
+  id         String    @id @default(cuid())
+  name       String
+  url        String
+  type       MediaType @default(IMAGE)
+  mimeType   String?   @map("mime_type")
+  size       Int? // bytes
+  altText    String?   @map("alt_text")
+  folder     String    @default("general")
+  tags       String[]
+  width      Int?
+  height     Int?
+  uploadedBy String?   @map("uploaded_by")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  @@index([folder])
+  @@index([type])
+  @@map("media_files")
+}
+
+// ─────────────────────────────────────────────────────────────
+// GALLERY
+// ─────────────────────────────────────────────────────────────
+
+model GalleryItem {
+  id          String    @id @default(cuid())
+  title       String?
+  description String?
+  imageUrl    String    @map("image_url")
+  category    String? // "Campus","Events","Results","Faculty","Workshops"
+  isPublic    Boolean   @default(true) @map("is_public")
+  sortOrder   Int       @default(0) @map("sort_order")
+  takenAt     DateTime? @map("taken_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([category])
+  @@map("gallery_items")
+}
+
+// ─────────────────────────────────────────────────────────────
+// TESTIMONIALS
+// ─────────────────────────────────────────────────────────────
+
+model Testimonial {
+  id          String   @id @default(cuid())
+  studentName String   @map("student_name")
+  achievement String? // "AIR 247 — JEE Advanced 2024"
+  course      String?
+  year        Int?
+  content     String
+  imageUrl    String?  @map("image_url")
+  rating      Int      @default(5)
+  isPublic    Boolean  @default(true) @map("is_public")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("testimonials")
+}
+
+// ─────────────────────────────────────────────────────────────
+// RESULTS (PUBLIC)
+// ─────────────────────────────────────────────────────────────
+
+model Result {
+  id          String   @id @default(cuid())
+  studentName String   @map("student_name")
+  achievement String // "AIR 247"
+  exam        String // "JEE Advanced 2024"
+  year        Int
+  course      String?
+  imageUrl    String?  @map("image_url")
+  testimonial String?
+  isPublic    Boolean  @default(true) @map("is_public")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("results")
+}
+
+// ─────────────────────────────────────────────────────────────
+// NOTICES
+// ─────────────────────────────────────────────────────────────
+
+model Notice {
+  id        String     @id @default(cuid())
+  title     String
+  content   String
+  type      NoticeType @default(GENERAL)
+  isActive  Boolean    @default(true) @map("is_active")
+  isPinned  Boolean    @default(false) @map("is_pinned")
+  expiresAt DateTime?  @map("expires_at")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  @@map("notices")
+}
+
+// ─────────────────────────────────────────────────────────────
+// CONTACT SUBMISSIONS
+// ─────────────────────────────────────────────────────────────
+
+model ContactSubmission {
+  id           String    @id @default(cuid())
+  name         String
+  phone        String
+  email        String?
+  subject      String?
+  message      String
+  interestedIn String?   @map("interested_in") // course
+  isRead       Boolean   @default(false) @map("is_read")
+  repliedAt    DateTime? @map("replied_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  @@map("contact_submissions")
+}
+
+// ─────────────────────────────────────────────────────────────
+// EVENTS
+// ─────────────────────────────────────────────────────────────
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  location    String?
+  startDate   DateTime  @map("start_date")
+  endDate     DateTime? @map("end_date")
+  imageUrl    String?   @map("image_url")
+  isPublic    Boolean   @default(true) @map("is_public")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("events")
+}
+
+// ─────────────────────────────────────────────────────────────
+// SITE SETTINGS (key-value store)
+// ─────────────────────────────────────────────────────────────
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  label     String?
+  group     String   @default("general") // "general","seo","contact","social","email"
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([group])
+  @@map("site_settings")
+}
+
+// ─────────────────────────────────────────────────────────────
+// ACTIVITY LOGS
+// ─────────────────────────────────────────────────────────────
+
+model ActivityLog {
+  id          String    @id @default(cuid())
+  adminId     String?   @map("admin_id")
+  studentId   String?   @map("student_id")
+  action      String // "CREATE_STUDENT","UPDATE_ENQUIRY","DELETE_BLOG"
+  resource    String // "Student","Enquiry","Blog"
+  resourceId  String?   @map("resource_id")
+  description String
+  metadata    Json?
+  ipAddress   String?   @map("ip_address")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  admin   AdminUser? @relation(fields: [adminId], references: [id])
+  student Student?   @relation(fields: [studentId], references: [id])
+
+  @@index([adminId])
+  @@index([resource])
+  @@index([createdAt])
+  @@map("activity_logs")
+}

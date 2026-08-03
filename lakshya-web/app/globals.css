@@ -1,0 +1,354 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ═══════════════════════════════════════════════════════════
+   LAKSHYA ACADEMY — DESIGN SYSTEM
+   Primary: #0F7A3C | Accent: #EAB308 | Dark: #1F2937
+   Fonts: Poppins (headings) | Inter (body)
+   ═══════════════════════════════════════════════════════════ */
+
+@theme inline {
+  /* ── Font System ─────────────────────────────────────────── */
+  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
+  --font-heading: var(--font-poppins), "Poppins", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  /* ── Color System (mapped from CSS vars) ─────────────────── */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* ── Brand Colors ────────────────────────────────────────── */
+  --color-brand-green: #0f7a3c;
+  --color-brand-green-light: #15a050;
+  --color-brand-green-dark: #0a5c2d;
+  --color-brand-gold: #eab308;
+  --color-brand-gold-light: #fbbf24;
+  --color-brand-gold-dark: #ca8a04;
+  --color-brand-dark: #1f2937;
+
+  /* ── Border Radius Scale ─────────────────────────────────── */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* ── Sidebar ─────────────────────────────────────────────── */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ── Chart Colors ────────────────────────────────────────── */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* ── Animation Durations ─────────────────────────────────── */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --duration-slower: 600ms;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   LIGHT THEME — Lakshya Brand Colors
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* Core */
+  --background: oklch(1 0 0);                       /* #FFFFFF */
+  --foreground: oklch(0.25 0.08 152);               /* #064E23 Deep Emerald */
+
+  /* Card */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.25 0.08 152);
+
+  /* Popover */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.25 0.08 152);
+
+  /* Primary — Brand Green #0F7A3C */
+  --primary: oklch(0.49 0.155 152.8);               /* #0F7A3C */
+  --primary-foreground: oklch(1 0 0);               /* White */
+
+  /* Secondary — Light Green */
+  --secondary: oklch(0.97 0.02 152);
+  --secondary-foreground: oklch(0.25 0.08 152);
+
+  /* Muted */
+  --muted: oklch(0.96 0.02 152);
+  --muted-foreground: oklch(0.35 0.08 152);
+
+  /* Accent — Brand Gold #EAB308 */
+  --accent: oklch(0.795 0.184 86.05);               /* #EAB308 */
+  --accent-foreground: oklch(0.15 0 0);             /* Near black for contrast */
+
+  /* Destructive */
+  --destructive: oklch(0.577 0.245 27.325);
+
+  /* Border, Input, Ring */
+  --border: oklch(0.92 0.03 152);
+  --input: oklch(0.92 0.03 152);
+  --ring: oklch(0.49 0.155 152.8);                  /* Primary green focus ring */
+
+  /* Border Radius — 16px base */
+  --radius: 1rem;                                   /* 16px */
+
+  /* Charts — Green-themed palette */
+  --chart-1: oklch(0.49 0.155 152.8);              /* Primary green */
+  --chart-2: oklch(0.795 0.184 86.05);             /* Gold */
+  --chart-3: oklch(0.6 0.12 200);                  /* Teal */
+  --chart-4: oklch(0.65 0.14 240);                 /* Blue */
+  --chart-5: oklch(0.7 0.17 40);                   /* Orange */
+
+  /* Sidebar */
+  --sidebar: oklch(0.97 0.003 264);
+  --sidebar-foreground: oklch(0.2 0.012 264);
+  --sidebar-primary: oklch(0.49 0.155 152.8);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.94 0.005 264);
+  --sidebar-accent-foreground: oklch(0.2 0.012 264);
+  --sidebar-border: oklch(0.9 0.003 264);
+  --sidebar-ring: oklch(0.49 0.155 152.8);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   DARK THEME
+   ───────────────────────────────────────────────────────────── */
+.dark {
+  --background: oklch(0.13 0.012 264);
+  --foreground: oklch(0.97 0.002 264);
+
+  --card: oklch(0.17 0.012 264);
+  --card-foreground: oklch(0.97 0.002 264);
+
+  --popover: oklch(0.17 0.012 264);
+  --popover-foreground: oklch(0.97 0.002 264);
+
+  /* Primary — Lighter green for dark mode */
+  --primary: oklch(0.58 0.155 152.8);
+  --primary-foreground: oklch(0.13 0 0);
+
+  --secondary: oklch(0.22 0.012 264);
+  --secondary-foreground: oklch(0.97 0.002 264);
+
+  --muted: oklch(0.22 0.012 264);
+  --muted-foreground: oklch(0.65 0.01 264);
+
+  /* Accent — Gold */
+  --accent: oklch(0.795 0.184 86.05);
+  --accent-foreground: oklch(0.1 0 0);
+
+  --destructive: oklch(0.7 0.2 27);
+
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.58 0.155 152.8);
+
+  --chart-1: oklch(0.58 0.155 152.8);
+  --chart-2: oklch(0.795 0.184 86.05);
+  --chart-3: oklch(0.65 0.12 200);
+  --chart-4: oklch(0.7 0.14 240);
+  --chart-5: oklch(0.75 0.17 40);
+
+  --sidebar: oklch(0.17 0.012 264);
+  --sidebar-foreground: oklch(0.97 0.002 264);
+  --sidebar-primary: oklch(0.58 0.155 152.8);
+  --sidebar-primary-foreground: oklch(0.13 0 0);
+  --sidebar-accent: oklch(0.22 0.012 264);
+  --sidebar-accent-foreground: oklch(0.97 0.002 264);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.58 0.155 152.8);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   BASE LAYER — Global Resets & Typography
+   ───────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply scroll-smooth;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── Typography ───────────────────────────────────────────── */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-bold tracking-tight;
+  }
+
+  h1 { @apply text-4xl md:text-5xl lg:text-6xl leading-[1.1]; }
+  h2 { @apply text-3xl md:text-4xl leading-[1.2]; }
+  h3 { @apply text-2xl md:text-3xl leading-[1.25]; }
+  h4 { @apply text-xl md:text-2xl leading-[1.3]; }
+  h5 { @apply text-lg md:text-xl leading-[1.4]; }
+  h6 { @apply text-base md:text-lg leading-[1.4]; }
+
+  p {
+    @apply leading-relaxed;
+  }
+
+  /* ── Focus Styles ─────────────────────────────────────────── */
+  :focus-visible {
+    @apply outline-2 outline-primary outline-offset-2 rounded-sm;
+  }
+
+  /* ── Selection ────────────────────────────────────────────── */
+  ::selection {
+    @apply bg-primary/20 text-primary;
+  }
+
+  /* ── Scrollbar (Webkit) ───────────────────────────────────── */
+  ::-webkit-scrollbar {
+    @apply w-1.5 h-1.5;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   UTILITIES LAYER — Custom Utility Classes
+   ───────────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Font utilities */
+  .font-heading { font-family: var(--font-heading); }
+  .font-body { font-family: var(--font-sans); }
+
+  /* Gradient text */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-accent to-yellow-400 bg-clip-text text-transparent;
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    @apply backdrop-blur-md bg-white/80 border border-white/20;
+  }
+
+  .glass-dark {
+    @apply backdrop-blur-md bg-gray-900/80 border border-white/10;
+  }
+
+  /* Smooth transitions for interactive elements */
+  .interactive {
+    @apply transition-all duration-200 ease-out cursor-pointer;
+  }
+
+  /* Section label / eyebrow text */
+  .eyebrow {
+    @apply text-sm font-semibold uppercase tracking-widest text-primary;
+  }
+
+  /* Balanced text rendering */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Container query utilities */
+  .container-inline {
+    container-type: inline-size;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   COMPONENTS LAYER — Reusable Class Compositions
+   ───────────────────────────────────────────────────────────── */
+@layer components {
+  /* Page wrapper with navbar offset */
+  .page-wrapper {
+    @apply min-h-dvh pt-16 md:pt-20;
+  }
+
+  /* Highlight / badge pill */
+  .badge-primary {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1
+           text-xs font-semibold text-primary;
+  }
+
+  .badge-gold {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1
+           text-xs font-semibold text-yellow-700;
+  }
+
+  /* Card hover lift effect */
+  .card-lift {
+    @apply transition-all duration-300 ease-out hover:-translate-y-1
+           hover:shadow-lg cursor-pointer;
+  }
+
+  /* Divider with centered text */
+  .divider-text {
+    @apply flex items-center gap-3 text-sm text-muted-foreground
+           before:h-px before:flex-1 before:bg-border
+           after:h-px after:flex-1 after:bg-border;
+  }
+}
