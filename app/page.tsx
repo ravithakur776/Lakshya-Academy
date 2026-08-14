@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { Navbar } from "@/components/layout/navbar";
+import { ResultsBannerCarousel } from "@/components/sections/results-banner-carousel";
 import { HeroSection } from "@/components/sections/hero";
 import { TrustStats } from "@/components/sections/trust-stats";
 import { AboutDirector } from "@/components/sections/about-director";
@@ -54,6 +55,9 @@ export default function HomePage() {
       <Navbar />
 
       <main id="main-content">
+        {/* Full-Width Results Hero Banner Carousel */}
+        <ResultsBannerCarousel />
+
         {/* 1. Hero */}
         <HeroSection />
 
