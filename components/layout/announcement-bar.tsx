@@ -14,7 +14,7 @@ export function AnnouncementBar() {
             <Sparkles className="h-3 w-3" /> LTPE 2026
           </span>
           <p className="truncate">
-            Registrations Open for LTPE 2026 Exam (23 August 2026) — Win Up to 100% Scholarship!
+            Registrations Open for LTPE 2026 Exam (11 October 2026) — Win Up to 100% Scholarship!
           </p>
         </div>
 

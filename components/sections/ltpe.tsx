@@ -35,7 +35,7 @@ export function LtpeSection() {
             <div className="grid grid-cols-2 gap-4 pt-2">
               <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4">
                 <Calendar className="h-5 w-5 text-amber-300 mb-1" />
-                <p className="font-bold text-white text-sm">23 August 2026</p>
+                <p className="font-bold text-white text-sm">11 October 2026</p>
                 <p className="text-xs text-emerald-200/80 font-medium">Exam Date</p>
               </div>
               <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4">

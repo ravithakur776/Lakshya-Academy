@@ -5,7 +5,7 @@ import { Bell, Plus, Pin, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/dashboard/ui/page-header";
 
 const MOCK_NOTICES = [
-  { id: "1", title: "LTPE 2026 Registration Open", content: "Lakshya Talent Promotional Exam 2026 registrations are now open. Exam will be held on 23 August 2026.", type: "URGENT", isPinned: true, createdAt: "2025-07-30" },
+  { id: "1", title: "LTPE 2026 Registration Open", content: "Lakshya Talent Promotional Exam 2026 registrations are now open. Exam will be held on 11 October 2026.", type: "URGENT", isPinned: true, createdAt: "2025-07-30" },
   { id: "2", title: "Mid-Term Exam Schedule Released", content: "The mid-term examinations for Aspire and Zenith batches will be held from August 10-15, 2025.", type: "EXAM", isPinned: false, createdAt: "2025-07-28" },
 ];
 

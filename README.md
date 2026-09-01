@@ -13,7 +13,7 @@
   - **Aspire**: Class 11 Two-Year Foundation & JEE Advanced Program.
   - **Zenith**: Class 12 One-Year Intensive Target Program.
   - **Excel**: Dropper / Repeater Dedicated Rank Improvement Batch.
-- **LTPE 2026 Scholarship Exam Hub**: Online registration system for **Lakshya Talent Promotional Exam 2026** (23 August 2026) offering up to **100% Scholarship**.
+- **LTPE 2026 Scholarship Exam Hub**: Online registration system for **Lakshya Talent Promotional Exam 2026** (11 October 2026) offering up to **100% Scholarship**.
 - **Blog & Strategy Studio**: 6 detailed articles written by directors on JEE Main & Advanced strategy with live search & category filtering.
 - **19+ Authentic Photo Gallery**: Real photos of victory rallies, IIT rankers, classroom problem-solving sessions, cake celebrations, and facilities.
 - **Top Ranker Roster**: Highlights top achievers including **Sabal Agrawal (AIR 272, JEE Advanced 2025)**, **Manvendra Singh (AIR 6824)**, and **Rutvik Kelkar (AIR 2072 | IIT BHU)**.

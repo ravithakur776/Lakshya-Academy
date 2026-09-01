@@ -102,7 +102,7 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard title="Total Enquiries" value={`${enquiriesCount}`} change="Live" changeType="positive" subtitle="Form Submissions" icon={PhoneCall} />
         <StatCard title="Total Admissions" value={`${admissionsCount}`} change="Live" changeType="positive" subtitle="Active Enrolled" icon={Users} />
-        <StatCard title="LTPE 2026 Registrations" value={`${ltpeCount}`} change="Live" changeType="positive" subtitle="Exam: 23 Aug 2026" icon={ClipboardList} />
+        <StatCard title="LTPE 2026 Registrations" value={`${ltpeCount}`} change="Live" changeType="positive" subtitle="Exam: 11 Oct 2026" icon={ClipboardList} />
         <StatCard title="Active Toppers" value={`${topResultsData.length}`} change="Real Roster" changeType="positive" subtitle="IIT-JEE Rankers" icon={Star} />
       </div>
 

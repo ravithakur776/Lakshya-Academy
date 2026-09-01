@@ -55,7 +55,7 @@ export default function LtpeAdminPage() {
     <div className="space-y-6">
       <PageHeader
         title="LTPE 2026 Registrations"
-        description="Manage Lakshya Talent Promotional Exam 2026 (23 August 2026) registrations & hall tickets"
+        description="Manage Lakshya Talent Promotional Exam 2026 (11 October 2026) registrations & hall tickets"
         icon={ClipboardList}
         breadcrumbs={[{ label: "Admin" }, { label: "LTPE 2026" }]}
         actions={
@@ -77,7 +77,7 @@ export default function LtpeAdminPage() {
           <p className="text-xs text-gray-500 font-semibold mt-0.5">Total Registered Candidates</p>
         </div>
         <div className="bg-white border border-emerald-100 rounded-2xl p-5 shadow-sm text-center">
-          <p className="text-3xl font-black text-[#0F7A3C] font-heading">23 August 2026</p>
+          <p className="text-3xl font-black text-[#0F7A3C] font-heading">11 October 2026</p>
           <p className="text-xs text-gray-500 font-semibold mt-0.5">Exam Date</p>
         </div>
         <div className="bg-white border border-emerald-100 rounded-2xl p-5 shadow-sm text-center">

@@ -158,7 +158,7 @@ export const LTPE_2026_CONFIG = {
   name: "Lakshya Talent Promotional Exam 2026",
   tagline: "Win Up to 100% Scholarship for IIT-JEE Coaching",
   eligibility: "Classes 8, 9, 10",
-  examDate: "23 August 2026",
+  examDate: "11 October 2026",
   fee: "FREE",
   maxScholarship: "100%",
   benefits: [
@@ -178,7 +178,7 @@ export const LTPE_2026_CONFIG = {
     },
     {
       q: "When will LTPE 2026 be conducted?",
-      a: "The exam will be held on 23 August 2026 at Lakshya Academy's Krishna Nagar, Mathura center."
+      a: "The exam will be held on 11 October 2026 at Lakshya Academy's Krishna Nagar, Mathura center."
     },
     {
       q: "What is the exam pattern for LTPE?",

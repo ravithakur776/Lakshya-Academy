@@ -30,7 +30,7 @@ export function LtpeForm() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      examDate: "23 August 2026",
+      examDate: "11 October 2026",
     },
   });
 
@@ -40,7 +40,7 @@ export function LtpeForm() {
       const res = await fetch("/api/ltpe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, examDate: "23 August 2026" }),
+        body: JSON.stringify({ ...data, examDate: "11 October 2026" }),
       });
 
       const result = await res.json();
@@ -66,7 +66,7 @@ export function LtpeForm() {
 
         <div className="bg-white border border-emerald-200 rounded-2xl p-4 text-xs font-medium text-emerald-900 space-y-1">
           <p className="font-bold flex items-center justify-center gap-1.5 text-[#0F7A3C]">
-            <Calendar className="h-4 w-4" /> Official Exam Date: 23 August 2026 (Sunday)
+            <Calendar className="h-4 w-4" /> Official Exam Date: 11 October 2026 (Sunday)
           </p>
           <p>Location: Lakshya Academy Campus, Krishna Nagar, Mathura</p>
         </div>
@@ -152,7 +152,7 @@ export function LtpeForm() {
         </div>
       </div>
 
-      {/* ── OFFICIAL EXAM DATE (23 AUGUST 2026 ONLY) ──────────────────── */}
+      {/* ── OFFICIAL EXAM DATE (11 OCTOBER 2026 ONLY) ──────────────────── */}
       <div>
         <label className="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-2 flex items-center justify-between">
           <span className="flex items-center gap-1.5">
@@ -169,7 +169,7 @@ export function LtpeForm() {
               <Calendar className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-black text-base font-heading leading-tight">23 August 2026 (Sunday)</p>
+              <p className="font-black text-base font-heading leading-tight">11 October 2026 (Sunday)</p>
               <p className="text-xs text-emerald-100 font-semibold mt-0.5">Lakshya Academy Campus, Krishna Nagar, Mathura</p>
             </div>
           </div>
@@ -177,7 +177,7 @@ export function LtpeForm() {
             Confirmed
           </span>
         </div>
-        <input type="hidden" value="23 August 2026" {...register("examDate")} />
+        <input type="hidden" value="11 October 2026" {...register("examDate")} />
       </div>
 
       {/* School & City */}

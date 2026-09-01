@@ -7,10 +7,10 @@ import { LTPE_2026_CONFIG } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "LTPE 2026 — Lakshya Talent Promotional Exam 2026 | Register FREE",
-  description: "Register FREE for LTPE 2026 — Lakshya Academy's scholarship exam for Class 8, 9 & 10 students. Win up to 100% scholarship. Exam Date: 23 August 2026.",
+  description: "Register FREE for LTPE 2026 — Lakshya Academy's scholarship exam for Class 8, 9 & 10 students. Win up to 100% scholarship. Exam Date: 11 October 2026.",
   openGraph: {
     title: "LTPE 2026 Scholarship Exam | Lakshya Academy Mathura",
-    description: "Win up to 100% scholarship for Class 8, 9 & 10 students. Free registration. Exam Date: 23 August 2026.",
+    description: "Win up to 100% scholarship for Class 8, 9 & 10 students. Free registration. Exam Date: 11 October 2026.",
   },
 };
 
@@ -47,7 +47,7 @@ export default function LtpePage() {
               <div className="grid grid-cols-2 gap-4 pt-2">
                 <div className="bg-white border border-emerald-100 rounded-2xl p-4 shadow-sm">
                   <Calendar className="h-5 w-5 text-[#0F7A3C] mb-1" />
-                  <p className="font-bold text-emerald-950 text-sm">23 August 2026</p>
+                  <p className="font-bold text-emerald-950 text-sm">11 October 2026</p>
                   <p className="text-xs text-emerald-800 font-semibold">Exam Date</p>
                 </div>
                 <div className="bg-white border border-emerald-100 rounded-2xl p-4 shadow-sm">
@@ -99,7 +99,7 @@ export default function LtpePage() {
               Scholarship Tiers
             </span>
             <h2 className="font-heading text-3xl font-black text-emerald-950 mt-3">Up to 100% Fee Waiver</h2>
-            <p className="text-sm font-semibold text-emerald-800 mt-2">Awarded based on merit performance in LTPE 2026 on 23 August 2026.</p>
+            <p className="text-sm font-semibold text-emerald-800 mt-2">Awarded based on merit performance in LTPE 2026 on 11 October 2026.</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
