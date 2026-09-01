@@ -50,7 +50,7 @@ export async function createAdminClient() {
     "@supabase/supabase-js"
   );
 
-  return createSupabaseAdmin<Database>(
+  return createSupabaseAdmin<any>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     {

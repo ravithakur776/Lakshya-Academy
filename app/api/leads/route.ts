@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-type LeadSource = "WEBSITE" | "WHATSAPP" | "LTPE" | "REFERRAL" | "GOOGLE" | "MANUAL" | "DIRECT_CALL";
 import { memoryEnquiries } from "@/lib/memory-store";
+import { createAdminClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,9 +32,27 @@ export async function POST(request: NextRequest) {
 
     memoryEnquiries.unshift(newEnquiry);
 
-    let enquiry = null;
+    // 1. Direct Supabase Storage
     try {
-      enquiry = await prisma.enquiry.create({
+      const supabase = await createAdminClient();
+      await supabase.from("enquiries").insert([
+        {
+          student_name: name,
+          phone,
+          email: email || null,
+          current_class: currentClass || null,
+          interested_course: course || "General Enquiry",
+          lead_source: leadSource || "WEBSITE",
+          status: "NEW",
+        },
+      ]);
+    } catch (sbErr) {
+      console.warn("[POST /api/leads] Supabase insert fallback:", sbErr);
+    }
+
+    // 2. Prisma fallback
+    try {
+      await prisma.enquiry.create({
         data: {
           studentName: name,
           phone,
@@ -46,14 +64,14 @@ export async function POST(request: NextRequest) {
         },
       });
     } catch (dbError) {
-      console.warn("[POST /api/leads] DB write skipped:", dbError);
+      console.warn("[POST /api/leads] Prisma DB write skipped:", dbError);
     }
 
     return NextResponse.json(
       {
         success: true,
         message: "Enquiry submitted successfully! Our counsellor will call you shortly.",
-        data: enquiry || newEnquiry,
+        data: newEnquiry,
       },
       { status: 201 }
     );
