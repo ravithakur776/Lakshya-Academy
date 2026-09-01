@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Logo } from "@/components/common/logo";
 import {
   LayoutDashboard,
@@ -19,8 +20,11 @@ import {
   X,
   ClipboardList,
   ChevronRight,
+  LogOut,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
 
 type NavItem = {
   href: string;
@@ -83,9 +87,27 @@ type Props = {
 
 export function DashboardSidebar({ isOpen, onClose }: Props) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   function isActive(href: string, exact?: boolean) {
     return exact ? pathname === href : pathname.startsWith(href);
+  }
+
+  async function handleLogout() {
+    try {
+      setIsLoggingOut(true);
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      onClose();
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Logout error:", error);
+      router.push("/login");
+    } finally {
+      setIsLoggingOut(false);
+    }
   }
 
   return (
@@ -169,8 +191,8 @@ export function DashboardSidebar({ isOpen, onClose }: Props) {
           ))}
         </nav>
 
-        {/* Bottom — Public Site Link */}
-        <div className="px-3 py-3 border-t border-emerald-100/80 bg-emerald-50/30 flex-shrink-0">
+        {/* Bottom Actions — Public Site Link & Log Out */}
+        <div className="px-3 py-3 border-t border-emerald-100/80 bg-emerald-50/30 flex-shrink-0 space-y-1.5">
           <Link
             href="/"
             target="_blank"
@@ -179,6 +201,23 @@ export function DashboardSidebar({ isOpen, onClose }: Props) {
             <span className="flex items-center gap-2">🌐 View Live Website</span>
             <ChevronRight className="h-3.5 w-3.5 text-emerald-600" />
           </Link>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 hover:border-red-300 transition-all border border-red-200/60 cursor-pointer disabled:opacity-50"
+          >
+            <span className="flex items-center gap-2">
+              {isLoggingOut ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-red-600" />
+              ) : (
+                <LogOut className="h-3.5 w-3.5 text-red-500" />
+              )}
+              <span>{isLoggingOut ? "Signing out..." : "Log Out"}</span>
+            </span>
+            <span className="text-[10px] uppercase font-bold text-red-400">Exit</span>
+          </button>
         </div>
       </aside>
     </>
