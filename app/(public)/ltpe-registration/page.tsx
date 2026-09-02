@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Sparkles, Calendar, Award, CheckCircle, Clock } from "lucide-react";
+import { Sparkles, Calendar, Award, CheckCircle, BookOpen, Download, ArrowDown } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { FadeIn } from "@/components/animations/fade-in";
 import { LtpeForm } from "@/components/forms/ltpe-form";
+import { LtpeSyllabusSection } from "@/components/sections/ltpe-syllabus-section";
 import { LTPE_2026_CONFIG } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "LTPE 2026 — Lakshya Talent Promotional Exam 2026 | Register FREE",
-  description: "Register FREE for LTPE 2026 — Lakshya Academy's scholarship exam for Class 8, 9 & 10 students. Win up to 100% scholarship. Exam Date: 11 October 2026.",
+  title: "LTPE 2026 — Lakshya Talent Promotional Exam 2026 | Register FREE & View Syllabus",
+  description: "Register FREE for LTPE 2026 — Lakshya Academy's scholarship exam for Class 8, 9 & 10 students. Win up to 100% scholarship. Exam Date: 11 October 2026. Download official syllabus.",
   openGraph: {
-    title: "LTPE 2026 Scholarship Exam | Lakshya Academy Mathura",
+    title: "LTPE 2026 Scholarship Exam & Syllabus | Lakshya Academy Mathura",
     description: "Win up to 100% scholarship for Class 8, 9 & 10 students. Free registration. Exam Date: 11 October 2026.",
   },
 };
@@ -25,9 +26,9 @@ export default function LtpePage() {
   return (
     <>
       {/* Top Split Hero — Registration Form Featured Directly at Top */}
-      <section id="register" className="py-16 md:py-24 bg-gradient-to-br from-white via-[#F4FAF6] to-white border-b border-emerald-100">
+      <section id="register" className="py-12 md:py-20 bg-gradient-to-br from-white via-[#F4FAF6] to-white border-b border-emerald-100">
         <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
 
             {/* Left Column — Exam Details & Benefits */}
             <div className="lg:col-span-6 space-y-6">
@@ -72,6 +73,18 @@ export default function LtpePage() {
                   <span>1-on-1 Counselling Slot with IIT (BHU) Directors</span>
                 </div>
               </div>
+
+              {/* Quick Jump to Syllabus */}
+              <div className="pt-2">
+                <a
+                  href="#syllabus"
+                  className="inline-flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-[#0F7A3C] border border-emerald-200/90 text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-xs"
+                >
+                  <BookOpen className="h-4 w-4 text-[#0F7A3C]" />
+                  <span>View Official Exam Syllabus (Class 8, 9 & 10)</span>
+                  <ArrowDown className="h-3.5 w-3.5 ml-0.5" />
+                </a>
+              </div>
             </div>
 
             {/* Right Column — Prominent Registration Form Card */}
@@ -90,6 +103,9 @@ export default function LtpePage() {
           </div>
         </Container>
       </section>
+
+      {/* Official Syllabus Section */}
+      <LtpeSyllabusSection />
 
       {/* Scholarship Tiers Section */}
       <section className="py-20 bg-white">

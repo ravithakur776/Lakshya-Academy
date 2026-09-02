@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Sparkles, CheckCircle, AlertCircle, Loader2, Award, Calendar, Check } from "lucide-react";
+import { Sparkles, CheckCircle, AlertCircle, Loader2, Award, Calendar, Check, Download, BookOpen, ExternalLink } from "lucide-react";
+import Image from "next/image";
 
 const schema = z.object({
   studentName: z.string().min(2, "Student name is required"),
@@ -80,13 +81,15 @@ export function LtpeForm() {
 
   if (registeredRegNo) {
     return (
-      <div className="bg-[#F4FAF6] border border-emerald-200 rounded-3xl p-8 text-center space-y-5">
+      <div className="bg-[#F4FAF6] border border-emerald-200 rounded-3xl p-6 md:p-8 text-center space-y-5">
         <div className="w-14 h-14 rounded-2xl bg-[#0F7A3C] text-white flex items-center justify-center mx-auto shadow-lg">
           <Award className="h-7 w-7" />
         </div>
-        <h3 className="text-2xl font-black font-heading text-emerald-950">Registration Confirmed!</h3>
-        <p className="text-xs font-bold text-emerald-800 uppercase tracking-widest">LTPE 2026 Registration Number</p>
-        <p className="text-4xl font-black font-mono text-[#0F7A3C] tracking-wider">{registeredRegNo}</p>
+        <div>
+          <h3 className="text-2xl font-black font-heading text-emerald-950">Registration Confirmed!</h3>
+          <p className="text-xs font-bold text-emerald-800 uppercase tracking-widest mt-1">LTPE 2026 Registration Number</p>
+          <p className="text-3xl md:text-4xl font-black font-mono text-[#0F7A3C] tracking-wider mt-1">{registeredRegNo}</p>
+        </div>
 
         <div className="bg-white border border-emerald-200 rounded-2xl p-4 text-xs font-medium text-emerald-900 space-y-1">
           <p className="font-bold flex items-center justify-center gap-1.5 text-[#0F7A3C]">
@@ -95,13 +98,46 @@ export function LtpeForm() {
           <p>Location: Lakshya Academy Campus, Krishna Nagar, Mathura</p>
         </div>
 
+        {/* Syllabus Download Box for the student */}
+        <div className="bg-white border-2 border-emerald-200/90 rounded-2xl p-4 text-left shadow-sm space-y-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-emerald-100 text-[#0F7A3C] flex items-center justify-center font-bold">
+              <BookOpen className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-xs font-black font-heading text-emerald-950">Official LTPE 2026 Syllabus</p>
+              <p className="text-[11px] font-semibold text-emerald-800">Classes 8, 9 & 10 (Physics, Chemistry, Maths)</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <a
+              href="/images/ltpe/ltpe-2026-syllabus.jpg"
+              download="Lakshya_LTPE_2026_Syllabus.jpg"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 bg-[#0F7A3C] hover:bg-[#0D6B34] text-white text-xs font-bold py-2.5 px-3 rounded-xl shadow-xs transition-all"
+            >
+              <Download className="h-3.5 w-3.5" />
+              <span>Download Syllabus Image</span>
+            </a>
+            <a
+              href="/images/ltpe/ltpe-2026-syllabus.jpg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center p-2.5 rounded-xl border border-emerald-200 text-[#0F7A3C] hover:bg-emerald-50 transition-colors"
+              title="View in full screen"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
+        </div>
+
         <p className="text-xs text-emerald-900/80 font-medium">
           A digital hall ticket and WhatsApp confirmation will be sent to your registered phone number.
         </p>
 
         <button
           onClick={() => setRegisteredRegNo(null)}
-          className="inline-flex items-center gap-2 bg-[#0F7A3C] text-white font-bold text-xs px-6 py-3 rounded-xl shadow-md"
+          className="inline-flex items-center gap-2 bg-emerald-100 hover:bg-emerald-200 text-[#0F7A3C] font-bold text-xs px-6 py-2.5 rounded-xl transition-all cursor-pointer"
         >
           Register Another Student
         </button>
@@ -160,8 +196,11 @@ export function LtpeForm() {
         </div>
 
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-1">
-            Current Class *
+          <label className="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-1 flex items-center justify-between">
+            <span>Current Class *</span>
+            <a href="#syllabus" className="text-[11px] text-[#0F7A3C] hover:underline font-bold normal-case">
+              View Syllabus ⬇
+            </a>
           </label>
           <select
             {...register("currentClass")}
