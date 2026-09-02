@@ -5,6 +5,7 @@ import { ClipboardList, Plus, Search, Filter, Award, Download, CheckCircle } fro
 import { PageHeader } from "@/components/dashboard/ui/page-header";
 
 import { exportToCsv } from "@/lib/csv-exporter";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LtpeAdminPage() {
   const [search, setSearch] = useState("");
@@ -14,6 +15,38 @@ export default function LtpeAdminPage() {
   useEffect(() => {
     async function loadLtpeRegistrations() {
       try {
+        // 1. Direct Supabase query
+        try {
+          const supabase = createClient();
+          const { data: sbData, error: sbErr } = await supabase
+            .from("ltpe_registrations")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+          if (!sbErr && sbData && sbData.length > 0) {
+            const formatted = sbData.map((row: any) => ({
+              id: row.id,
+              registrationNo: row.registration_no,
+              studentName: row.student_name,
+              parentName: row.parent_name,
+              parentPhone: row.parent_phone,
+              phone: row.parent_phone,
+              currentClass: row.current_class,
+              class: row.current_class,
+              city: row.city || "Mathura",
+              school: row.school || "",
+              status: row.status || "CONFIRMED",
+              createdAt: row.created_at,
+            }));
+            setLtpeList(formatted);
+            setIsLoading(false);
+            return;
+          }
+        } catch (sbError) {
+          console.warn("Direct Supabase fetch skipped:", sbError);
+        }
+
+        // 2. Fallback to API
         const res = await fetch("/api/ltpe");
         if (res.ok) {
           const data = await res.json();

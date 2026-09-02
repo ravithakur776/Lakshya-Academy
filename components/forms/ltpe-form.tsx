@@ -18,6 +18,8 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
+import { createClient } from "@/lib/supabase/client";
+
 export function LtpeForm() {
   const [registeredRegNo, setRegisteredRegNo] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
@@ -46,7 +48,29 @@ export function LtpeForm() {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || "Registration failed");
 
-      setRegisteredRegNo(result.registrationNo || result.regNo || "LTPE2026-REG");
+      const regNo = result.registrationNo || result.regNo || `LTPE26${Math.floor(1000 + Math.random() * 9000)}`;
+
+      // Dual-layer insurance: Direct client write to Supabase
+      try {
+        const supabase = createClient();
+        await supabase.from("ltpe_registrations").insert([
+          {
+            registration_no: regNo,
+            student_name: data.studentName,
+            parent_name: data.parentName,
+            parent_phone: data.phone,
+            current_class: data.currentClass,
+            school: data.schoolName,
+            city: data.city || "Mathura",
+            exam_date: "11 October 2026",
+            status: "CONFIRMED",
+          },
+        ]);
+      } catch (clientErr) {
+        console.warn("[LtpeForm] Client Supabase sync handled:", clientErr);
+      }
+
+      setRegisteredRegNo(regNo);
       reset();
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Failed to register. Please call +91 9319098141.";
