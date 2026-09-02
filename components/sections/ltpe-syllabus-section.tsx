@@ -255,7 +255,7 @@ export function LtpeSyllabusSection() {
                 href="#register"
                 className="bg-amber-400 hover:bg-amber-300 text-gray-950 font-black text-xs px-5 py-2.5 rounded-xl transition-all shadow-md flex-shrink-0"
               >
-                Register for Free Exam
+                Register for LTPE 2026 (₹100)
               </a>
             </div>
           </div>

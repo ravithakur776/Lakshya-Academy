@@ -101,7 +101,7 @@ export function Navbar() {
                   "bg-[#0F7A3C] hover:bg-[#0D6B34] text-white rounded-full px-5 py-2 font-bold shadow-md shadow-emerald-700/20 hover:shadow-emerald-700/30 transition-all duration-300"
                 )}
               >
-                Free LTPE Test
+                LTPE 2026 Test
               </Link>
             </div>
 
@@ -195,7 +195,7 @@ export function Navbar() {
                     "w-full justify-center bg-[#0F7A3C] hover:bg-[#0D6B34] text-white rounded-xl font-bold py-3 text-xs shadow-md shadow-emerald-700/20"
                   )}
                 >
-                  Free LTPE Test
+                  LTPE 2026 Test
                 </Link>
               </div>
             </motion.div>

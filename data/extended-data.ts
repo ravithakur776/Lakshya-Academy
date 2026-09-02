@@ -415,7 +415,7 @@ export const faqCategories: FaqCategory[] = [
     faqs: [
       {
         q: "How can I register for the LTPE 2026 Scholarship Exam?",
-        a: "You can register for FREE on our website under the LTPE tab. The exam takes place on 11 October 2026 offering up to 100% tuition fee waiver.",
+        a: "You can register online on our website under the LTPE tab with a nominal registration fee of ₹100. The exam takes place on 11 October 2026 offering up to 100% tuition fee waiver.",
       },
     ],
   },

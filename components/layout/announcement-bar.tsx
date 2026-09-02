@@ -31,7 +31,7 @@ export function AnnouncementBar() {
             href="/ltpe-registration#register"
             className="inline-flex items-center gap-1 bg-amber-400 text-gray-950 hover:bg-amber-300 font-bold text-[11px] px-3 py-1 rounded-full transition-all shadow-sm"
           >
-            <span>Register Free</span>
+            <span>Register (₹100)</span>
             <ArrowRight className="h-3 w-3" />
           </Link>
         </div>

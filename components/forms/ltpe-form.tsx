@@ -95,6 +95,7 @@ export function LtpeForm() {
           <p className="font-bold flex items-center justify-center gap-1.5 text-[#0F7A3C]">
             <Calendar className="h-4 w-4" /> Official Exam Date: 11 October 2026 (Sunday)
           </p>
+          <p>Registration Fee: <strong>₹100 Only</strong> (Collect Admit Card / Hall Ticket on Exam Day)</p>
           <p>Location: Lakshya Academy Campus, Krishna Nagar, Mathura</p>
         </div>
 
@@ -283,7 +284,7 @@ export function LtpeForm() {
         ) : (
           <>
             <Sparkles className="h-4 w-4" />
-            <span>Complete Free LTPE Registration</span>
+            <span>Complete Registration (₹100 Fee)</span>
           </>
         )}
       </button>

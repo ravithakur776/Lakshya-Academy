@@ -159,7 +159,7 @@ export const LTPE_2026_CONFIG = {
   tagline: "Win Up to 100% Scholarship for IIT-JEE Coaching",
   eligibility: "Classes 8, 9, 10",
   examDate: "11 October 2026",
-  fee: "FREE",
+  fee: "₹100",
   maxScholarship: "100%",
   benefits: [
     "Up to 100% Fee Waiver on Class 9, 10, 11 & 12 Batches",
@@ -174,7 +174,7 @@ export const LTPE_2026_CONFIG = {
     },
     {
       q: "What is the registration fee for LTPE 2026?",
-      a: "LTPE 2026 registration is completely FREE of cost for all eligible students."
+      a: "The registration fee for LTPE 2026 is nominal ₹100 only."
     },
     {
       q: "When will LTPE 2026 be conducted?",

@@ -28,7 +28,7 @@ export function LtpeSection() {
             </h2>
 
             <p className="text-emerald-100/90 text-base md:text-lg leading-relaxed font-medium">
-              Win <strong className="text-white">Up to 100% Scholarship</strong> for Class 8, 9, and 10 students aiming for IIT-JEE & Foundation excellence. Free registration!
+              Win <strong className="text-white">Up to 100% Scholarship</strong> for Class 8, 9, and 10 students aiming for IIT-JEE & Foundation excellence. Registration fee ₹100 only!
             </p>
 
             {/* Quick highlights */}
@@ -50,7 +50,7 @@ export function LtpeSection() {
                 href={ROUTES.ltpeRegistration}
                 className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-gray-950 font-bold text-base px-8 py-4 rounded-full transition-all shadow-xl shadow-amber-400/20"
               >
-                <span>Register for LTPE 2026 (Free)</span>
+                <span>Register for LTPE 2026 (₹100)</span>
                 <ArrowRight className="h-5 w-5" />
               </Link>
             </div>
@@ -70,7 +70,7 @@ export function LtpeSection() {
             <ul className="space-y-4 text-sm font-medium text-emerald-100">
               <li className="flex items-start gap-3">
                 <CheckCircle className="h-5 w-5 text-amber-300 flex-shrink-0 mt-0.5" />
-                <span><strong>Free Online & Offline Registration</strong> for all students of Classes 8, 9 & 10 in Mathura & nearby regions.</span>
+                <span><strong>Nominal ₹100 Registration Fee</strong> for all students of Classes 8, 9 & 10 in Mathura & nearby regions.</span>
               </li>
               <li className="flex items-start gap-3">
                 <CheckCircle className="h-5 w-5 text-amber-300 flex-shrink-0 mt-0.5" />
