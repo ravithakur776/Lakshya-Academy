@@ -124,7 +124,7 @@ export function DashboardSidebar({ isOpen, onClose }: Props) {
       <aside
         className={cn(
           "fixed top-0 left-0 h-screen w-64 bg-white border-r border-emerald-100/80 z-50 flex flex-col shadow-sm transition-transform duration-300 ease-in-out",
-          "lg:translate-x-0 lg:static lg:z-auto",
+          "lg:translate-x-0 lg:static lg:h-full lg:z-auto flex-shrink-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -135,14 +135,14 @@ export function DashboardSidebar({ isOpen, onClose }: Props) {
           </Link>
           <button
             onClick={onClose}
-            className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-700 hover:bg-emerald-50 transition-colors"
+            className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-700 hover:bg-emerald-50 transition-colors cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        {/* Navigation items */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3">
+        {/* Navigation items — Smooth independent scroll */}
+        <nav className="flex-1 overflow-y-auto py-4 px-3 overscroll-contain space-y-5">
           {navSections.map((section) => (
             <div key={section.label} className="mb-5">
               <p className="text-[10px] font-bold text-emerald-800 uppercase tracking-widest px-3 mb-1.5">
