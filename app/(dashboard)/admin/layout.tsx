@@ -53,7 +53,7 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="h-screen bg-white text-gray-900 flex font-sans antialiased selection:bg-[#0F7A3C] selection:text-white overflow-hidden">
+    <div className="min-h-screen bg-white text-gray-900 flex font-sans antialiased selection:bg-[#0F7A3C] selection:text-white">
       {/* Sidebar */}
       <DashboardSidebar
         isOpen={sidebarOpen}
@@ -61,12 +61,10 @@ export default function AdminLayout({
       />
 
       {/* Main Content Shell */}
-      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0">
         <DashboardHeader onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 w-full space-y-6 overscroll-contain">
-          <div className="max-w-7xl mx-auto space-y-6">
-            {children}
-          </div>
+        <main className="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+          {children}
         </main>
       </div>
     </div>

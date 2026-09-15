@@ -123,13 +123,13 @@ export function DashboardSidebar({ isOpen, onClose }: Props) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 h-screen w-64 bg-white border-r border-emerald-100/80 z-50 flex flex-col shadow-sm transition-transform duration-300 ease-in-out",
-          "lg:translate-x-0 lg:static lg:h-full lg:z-auto flex-shrink-0",
+          "fixed top-0 left-0 h-screen w-64 bg-white border-r border-emerald-100/80 z-40 flex flex-col shadow-sm transition-transform duration-300 ease-in-out",
+          "lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen lg:self-start flex-shrink-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Logo Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-emerald-100/80 flex-shrink-0 bg-gradient-to-r from-emerald-50/40 via-white to-white">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-emerald-100/80 flex-shrink-0 bg-gradient-to-r from-emerald-50/40 via-white to-white">
           <Link href="/admin" className="flex items-center gap-3">
             <Logo size="sm" />
           </Link>
@@ -142,10 +142,13 @@ export function DashboardSidebar({ isOpen, onClose }: Props) {
         </div>
 
         {/* Navigation items — Smooth independent scroll */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3 overscroll-contain space-y-5">
+        <nav
+          data-lenis-prevent
+          className="flex-1 overflow-y-auto py-3 px-3 scrollbar-thin scrollbar-thumb-emerald-200/80 scrollbar-track-transparent"
+        >
           {navSections.map((section) => (
-            <div key={section.label} className="mb-5">
-              <p className="text-[10px] font-bold text-emerald-800 uppercase tracking-widest px-3 mb-1.5">
+            <div key={section.label} className="mb-3.5">
+              <p className="text-[10px] font-bold text-emerald-800 uppercase tracking-widest px-3 mb-1">
                 {section.label}
               </p>
               <div className="space-y-0.5">
@@ -157,7 +160,7 @@ export function DashboardSidebar({ isOpen, onClose }: Props) {
                       href={item.href}
                       onClick={onClose}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 group",
+                        "flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 group",
                         active
                           ? "bg-[#0F7A3C] text-white shadow-md shadow-emerald-700/20"
                           : "text-gray-600 hover:text-emerald-900 hover:bg-emerald-50/80"
@@ -192,11 +195,11 @@ export function DashboardSidebar({ isOpen, onClose }: Props) {
         </nav>
 
         {/* Bottom Actions — Public Site Link & Log Out */}
-        <div className="px-3 py-3 border-t border-emerald-100/80 bg-emerald-50/30 flex-shrink-0 space-y-1.5">
+        <div className="px-3 py-2.5 border-t border-emerald-100/80 bg-emerald-50/30 flex-shrink-0 space-y-1.5">
           <Link
             href="/"
             target="_blank"
-            className="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-emerald-800 hover:bg-emerald-100/80 transition-all border border-emerald-200/60"
+            className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-emerald-800 hover:bg-emerald-100/80 transition-all border border-emerald-200/60"
           >
             <span className="flex items-center gap-2">🌐 View Live Website</span>
             <ChevronRight className="h-3.5 w-3.5 text-emerald-600" />
@@ -206,7 +209,7 @@ export function DashboardSidebar({ isOpen, onClose }: Props) {
             type="button"
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 hover:border-red-300 transition-all border border-red-200/60 cursor-pointer disabled:opacity-50"
+            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 hover:border-red-300 transition-all border border-red-200/60 cursor-pointer disabled:opacity-50"
           >
             <span className="flex items-center gap-2">
               {isLoggingOut ? (
