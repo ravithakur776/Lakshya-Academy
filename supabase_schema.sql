@@ -93,6 +93,18 @@ CREATE POLICY "Allow public insert to contact_submissions"
 CREATE POLICY "Allow public read notices" 
     ON public.notices FOR SELECT TO anon, authenticated USING (true);
 
+CREATE POLICY "Allow public update to ltpe_registrations" 
+    ON public.ltpe_registrations FOR UPDATE TO anon, authenticated USING (true) WITH CHECK (true);
+
+CREATE POLICY "Allow public delete from ltpe_registrations" 
+    ON public.ltpe_registrations FOR DELETE TO anon, authenticated USING (true);
+
+CREATE POLICY "Allow public update to enquiries" 
+    ON public.enquiries FOR UPDATE TO anon, authenticated USING (true) WITH CHECK (true);
+
+CREATE POLICY "Allow public delete from enquiries" 
+    ON public.enquiries FOR DELETE TO anon, authenticated USING (true);
+
 -- Allow full access for service_role / Admin
 CREATE POLICY "Admin full access ltpe" 
     ON public.ltpe_registrations FOR ALL TO service_role USING (true) WITH CHECK (true);

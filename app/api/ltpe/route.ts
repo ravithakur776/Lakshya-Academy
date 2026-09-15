@@ -34,6 +34,7 @@ export async function GET() {
           city: row.city || "Mathura",
           gender: row.gender || "N/A",
           examDate: row.exam_date || "11 October 2026",
+          examCenter: row.exam_center || "Lakshya Academy Campus, Krishna Nagar, Mathura",
           status: row.status || "CONFIRMED",
           createdAt: row.created_at,
         }));
@@ -225,5 +226,138 @@ export async function POST(request: NextRequest) {
       { error: "Failed to register for LTPE. Please call us at +91 9319098141." },
       { status: 500 }
     );
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const {
+      id,
+      registrationNo,
+      studentName,
+      parentName,
+      parentPhone,
+      phone,
+      parentEmail,
+      currentClass,
+      school,
+      city,
+      status,
+      examDate,
+    } = body;
+
+    const actualPhone = parentPhone || phone;
+
+    if (!id && !registrationNo) {
+      return NextResponse.json(
+        { error: "ID or Registration Number is required to update." },
+        { status: 400 }
+      );
+    }
+
+    // 1. Update in Supabase
+    try {
+      const supabase = await createAdminClient();
+      let query = supabase.from("ltpe_registrations").update({
+        student_name: studentName,
+        parent_name: parentName,
+        parent_phone: actualPhone,
+        parent_email: parentEmail || null,
+        current_class: currentClass,
+        school: school || null,
+        city: city || "Mathura",
+        status: status || "CONFIRMED",
+        exam_date: examDate || "11 October 2026",
+        updated_at: new Date().toISOString(),
+      });
+
+      if (id && id.length > 20) {
+        query = query.eq("id", id);
+      } else if (registrationNo) {
+        query = query.eq("registration_no", registrationNo);
+      }
+
+      await query;
+    } catch (sbErr) {
+      console.warn("[PUT /api/ltpe] Supabase update skipped:", sbErr);
+    }
+
+    // 2. Update memory store
+    const memIndex = memoryLtpeRegistrations.findIndex(
+      (item) => item.id === id || (registrationNo && item.registrationNo === registrationNo)
+    );
+    if (memIndex !== -1) {
+      memoryLtpeRegistrations[memIndex] = {
+        ...memoryLtpeRegistrations[memIndex],
+        studentName: studentName || memoryLtpeRegistrations[memIndex].studentName,
+        parentName: parentName || memoryLtpeRegistrations[memIndex].parentName,
+        parentPhone: actualPhone || memoryLtpeRegistrations[memIndex].parentPhone,
+        phone: actualPhone || memoryLtpeRegistrations[memIndex].phone,
+        currentClass: currentClass || memoryLtpeRegistrations[memIndex].currentClass,
+        class: currentClass || memoryLtpeRegistrations[memIndex].class,
+        school: school || memoryLtpeRegistrations[memIndex].school,
+        city: city || memoryLtpeRegistrations[memIndex].city,
+        status: status || memoryLtpeRegistrations[memIndex].status,
+      };
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "LTPE registration updated successfully.",
+    });
+  } catch (error) {
+    console.error("[PUT /api/ltpe]", error);
+    return NextResponse.json({ error: "Failed to update registration." }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+    const registrationNo = searchParams.get("registrationNo");
+
+    if (!id && !registrationNo) {
+      return NextResponse.json(
+        { error: "ID or Registration Number is required to delete." },
+        { status: 400 }
+      );
+    }
+
+    // 1. Delete from Supabase
+    try {
+      const supabase = await createAdminClient();
+      let query = supabase.from("ltpe_registrations").delete();
+
+      if (id && id.length > 20) {
+        query = query.eq("id", id);
+      } else if (registrationNo) {
+        query = query.eq("registration_no", registrationNo);
+      }
+
+      const { error: sbDeleteErr } = await query;
+      if (sbDeleteErr) {
+        console.warn("[DELETE /api/ltpe] Supabase delete warning:", sbDeleteErr);
+      }
+    } catch (sbErr) {
+      console.warn("[DELETE /api/ltpe] Supabase delete skipped:", sbErr);
+    }
+
+    // 2. Delete from memory store
+    const memIndex = memoryLtpeRegistrations.findIndex(
+      (item) => item.id === id || (registrationNo && item.registrationNo === registrationNo)
+    );
+    if (memIndex !== -1) {
+      memoryLtpeRegistrations.splice(memIndex, 1);
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "LTPE registration deleted successfully.",
+    });
+  } catch (error) {
+    console.error("[DELETE /api/ltpe]", error);
+    return NextResponse.json({ error: "Failed to delete registration." }, { status: 500 });
   }
 }
