@@ -319,6 +319,15 @@ export default function LtpeAdminPage() {
     window.open(`https://wa.me/${formattedPhone}?text=${msg}`, "_blank");
   }
 
+  function escapeHtml(str: string) {
+    return (str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   // Print Hall Ticket Dialog
   function handlePrintAdmitCard(item: LtpeRegistration) {
     const printWindow = window.open("", "_blank");
@@ -328,7 +337,7 @@ export default function LtpeAdminPage() {
       <!DOCTYPE html>
       <html>
       <head>
-        <title>LTPE 2026 Admit Card - ${item.studentName}</title>
+        <title>LTPE 2026 Admit Card - ${escapeHtml(item.studentName)}</title>
         <style>
           body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px; color: #111; }
           .ticket-card { border: 2px solid #0F7A3C; border-radius: 16px; padding: 32px; max-width: 700px; margin: 0 auto; }
@@ -355,23 +364,23 @@ export default function LtpeAdminPage() {
 
           <div class="reg-box">
             <div class="label">Registration Number</div>
-            <div class="reg-no">${item.registrationNo}</div>
+            <div class="reg-no">${escapeHtml(item.registrationNo)}</div>
           </div>
 
           <div class="grid">
-            <div class="field"><div class="label">Candidate Name</div><div class="value">${item.studentName}</div></div>
-            <div class="field"><div class="label">Class</div><div class="value">${item.currentClass || item.class}</div></div>
-            <div class="field"><div class="label">Parent / Guardian</div><div class="value">${item.parentName}</div></div>
-            <div class="field"><div class="label">Mobile Number</div><div class="value">${item.parentPhone || item.phone}</div></div>
-            <div class="field"><div class="label">School</div><div class="value">${item.school || "Not specified"}</div></div>
-            <div class="field"><div class="label">City / Town</div><div class="value">${item.city || "Mathura"}</div></div>
-            <div class="field"><div class="label">Official Exam Date</div><div class="value">${item.examDate || "11 October 2026 (Sunday)"}</div></div>
+            <div class="field"><div class="label">Candidate Name</div><div class="value">${escapeHtml(item.studentName)}</div></div>
+            <div class="field"><div class="label">Class</div><div class="value">${escapeHtml(item.currentClass || item.class || "")}</div></div>
+            <div class="field"><div class="label">Parent / Guardian</div><div class="value">${escapeHtml(item.parentName)}</div></div>
+            <div class="field"><div class="label">Mobile Number</div><div class="value">${escapeHtml(item.parentPhone || item.phone || "")}</div></div>
+            <div class="field"><div class="label">School</div><div class="value">${escapeHtml(item.school || "Not specified")}</div></div>
+            <div class="field"><div class="label">City / Town</div><div class="value">${escapeHtml(item.city || "Mathura")}</div></div>
+            <div class="field"><div class="label">Official Exam Date</div><div class="value">${escapeHtml(item.examDate || "11 October 2026 (Sunday)")}</div></div>
             <div class="field"><div class="label">Exam Fee Status</div><div class="value">₹100 (Registration Confirmed)</div></div>
           </div>
 
           <div class="field" style="margin-bottom: 20px;">
             <div class="label">Examination Venue</div>
-            <div class="value">${item.examCenter || "Lakshya Academy Campus, 190/2, Krishna Nagar, Mathura"}</div>
+            <div class="value">${escapeHtml(item.examCenter || "Lakshya Academy Campus, 190/2, Krishna Nagar, Mathura")}</div>
           </div>
 
           <div class="footer-note">

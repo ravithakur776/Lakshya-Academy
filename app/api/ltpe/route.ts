@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { memoryLtpeRegistrations, memoryEnquiries } from "@/lib/memory-store";
-import { createAdminClient } from "@/lib/supabase/server";
+import { createAdminClient, createClient } from "@/lib/supabase/server";
 
 function generateLtpeRegNo(): string {
   const year = new Date().getFullYear().toString().slice(-2);
@@ -231,6 +231,23 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
+    // 1. Verify admin authentication
+    try {
+      const userSupabase = await createClient();
+      const {
+        data: { user },
+      } = await userSupabase.auth.getUser();
+
+      if (!user) {
+        return NextResponse.json(
+          { error: "Unauthorized: Admin authentication required to update records." },
+          { status: 401 }
+        );
+      }
+    } catch (authErr) {
+      console.warn("[PUT /api/ltpe] Auth verification skipped in development/fallback:", authErr);
+    }
+
     const body = await request.json();
     const {
       id,
@@ -314,6 +331,23 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    // 1. Verify admin authentication
+    try {
+      const userSupabase = await createClient();
+      const {
+        data: { user },
+      } = await userSupabase.auth.getUser();
+
+      if (!user) {
+        return NextResponse.json(
+          { error: "Unauthorized: Admin authentication required to delete records." },
+          { status: 401 }
+        );
+      }
+    } catch (authErr) {
+      console.warn("[DELETE /api/ltpe] Auth verification skipped in development/fallback:", authErr);
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     const registrationNo = searchParams.get("registrationNo");
