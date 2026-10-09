@@ -65,8 +65,8 @@ export default function PublicAdmitCardPage({
             status: data.status || "CONFIRMED",
             examDate: data.exam_date || "11 October 2026 (Sunday)",
             examCenter: data.exam_center || "Lakshya Academy Campus, 190/2, Krishna Nagar, Mathura",
-            reportingTime: "09:30 AM",
-            examTiming: "10:00 AM – 12:00 PM (2 Hours)",
+            reportingTime: "10:00 AM (Gate closes at 10:15 AM)",
+            examTiming: "10:30 AM – 12:30 PM (2 Hours)",
           });
           return;
         }
@@ -83,8 +83,8 @@ export default function PublicAdmitCardPage({
             if (found) {
               setCandidate({
                 ...found,
-                reportingTime: "09:30 AM",
-                examTiming: "10:00 AM – 12:00 PM (2 Hours)",
+                reportingTime: "10:00 AM (Gate closes at 10:15 AM)",
+                examTiming: "10:30 AM – 12:30 PM (2 Hours)",
               });
               return;
             }
@@ -103,8 +103,8 @@ export default function PublicAdmitCardPage({
           status: "CONFIRMED",
           examDate: "11 October 2026 (Sunday)",
           examCenter: "Lakshya Academy Campus, 190/2, Krishna Nagar, Mathura",
-          reportingTime: "09:30 AM",
-          examTiming: "10:00 AM – 12:00 PM (2 Hours)",
+          reportingTime: "10:00 AM (Gate closes at 10:15 AM)",
+          examTiming: "10:30 AM – 12:30 PM (2 Hours)",
         });
       } catch (err) {
         console.error("Admit card fetch error:", err);
@@ -400,14 +400,14 @@ export default function PublicAdmitCardPage({
                 <p className="text-[10px] font-bold text-gray-500 uppercase">Reporting Time</p>
                 <p className="text-sm font-bold text-gray-900 mt-0.5 flex items-center gap-1.5">
                   <Clock className="h-3.5 w-3.5 text-gray-500" />
-                  <span>09:30 AM (Gates close 09:45 AM)</span>
+                  <span>10:00 AM (Gate closes at 10:15 AM)</span>
                 </p>
               </div>
 
               <div>
                 <p className="text-[10px] font-bold text-gray-500 uppercase">Exam Duration</p>
                 <p className="text-sm font-bold text-gray-900 mt-0.5">
-                  10:00 AM – 12:00 PM (2 Hours)
+                  10:30 AM – 12:30 PM (2 Hours)
                 </p>
               </div>
             </div>
@@ -455,10 +455,11 @@ export default function PublicAdmitCardPage({
               Important Instructions for Candidates & Parents:
             </p>
             <p>1. <strong>Mandatory Printout:</strong> Carry a physical printout of this Admit Card along with your school ID or Aadhaar card.</p>
-            <p>2. <strong>Reporting:</strong> Reach the center at least 30 minutes before commencement (09:30 AM). Gate closes at 09:45 AM.</p>
-            <p>3. <strong>Stationery:</strong> Darken OMR sheet using only Blue or Black Ballpoint Pen. Gel pens & pencils are strictly prohibited.</p>
-            <p>4. <strong>Electronic Devices:</strong> Smartwatches, mobile phones, and calculators are strictly forbidden inside the hall.</p>
-            <p>5. <strong>Queries:</strong> In case of difficulty locating venue, call <strong>+91 9319098141</strong> or <strong>+91 7895060239</strong>.</p>
+            <p>2. <strong>Reporting Time:</strong> Arrive at the exam center strictly by 10:00 AM. Entry will close at 10:15 AM sharp.</p>
+            <p>3. <strong>Exam Pattern:</strong> Objective Multiple Choice Questions covering Physics, Chemistry &amp; Mathematics.</p>
+            <p>4. <strong>Pen Requirement:</strong> Use only Blue or Black Ballpoint Pen for darkening OMR circles. Gel pens &amp; pencils are strictly prohibited.</p>
+            <p>5. <strong>Prohibited Items:</strong> Mobile phones, smart watches, calculators, digital gadgets, and bags are NOT permitted in the hall.</p>
+            <p>6. <strong>Helpline:</strong> For transport guidance or queries, call <strong>+91 9319098141</strong> or <strong>+91 7895060239</strong>.</p>
           </div>
 
           {/* Footer note */}

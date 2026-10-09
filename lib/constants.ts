@@ -182,7 +182,7 @@ export const LTPE_2026_CONFIG = {
     },
     {
       q: "What is the exam pattern for LTPE?",
-      a: "The test consists of Multiple Choice Questions (MCQs) covering Physics, Chemistry, Mathematics, and Mental Ability based on the student's current class syllabus."
+      a: "The test consists of Multiple Choice Questions (MCQs) covering Physics, Chemistry, and Mathematics based on the student's current class syllabus."
     },
     {
       q: "How will I receive my Hall Ticket?",

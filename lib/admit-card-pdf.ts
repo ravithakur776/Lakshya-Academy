@@ -293,7 +293,7 @@ export async function buildAdmitCardPdf(candidate: AdmitCardCandidate): Promise<
   doc.text("Reporting Time:", schX, schY);
   doc.setTextColor(darkText[0], darkText[1], darkText[2]);
   doc.setFontSize(8);
-  doc.text(candidate.reportingTime || "09:30 AM (Gate closes at 09:45 AM)", schX + 32, schY);
+  doc.text(candidate.reportingTime || "10:00 AM (Gate closes at 10:15 AM)", schX + 32, schY);
 
   schY += 6;
   doc.setTextColor(grayText[0], grayText[1], grayText[2]);
@@ -301,7 +301,7 @@ export async function buildAdmitCardPdf(candidate: AdmitCardCandidate): Promise<
   doc.text("Exam Duration:", schX, schY);
   doc.setTextColor(darkText[0], darkText[1], darkText[2]);
   doc.setFontSize(8);
-  doc.text(candidate.examTiming || "10:00 AM – 12:00 PM (2 Hours)", schX + 32, schY);
+  doc.text(candidate.examTiming || "10:30 AM – 12:30 PM (2 Hours)", schX + 32, schY);
 
   // Right sub-column: Venue
   const venueX = margin + 98;
@@ -440,8 +440,8 @@ export async function buildAdmitCardPdf(candidate: AdmitCardCandidate): Promise<
 
   const instructions = [
     "1. Printout: Bring a clear printed copy of this Admit Card and your School ID or Aadhaar Card to the exam hall.",
-    "2. Reporting Time: Arrive at the exam center strictly by 09:30 AM. Entry will close at 09:45 AM sharp.",
-    "3. Exam Pattern: Objective Multiple Choice Questions covering Physics, Chemistry, Mathematics & Mental Ability.",
+    "2. Reporting Time: Arrive at the exam center strictly by 10:00 AM. Entry will close at 10:15 AM sharp.",
+    "3. Exam Pattern: Objective Multiple Choice Questions covering Physics, Chemistry & Mathematics.",
     "4. Pen Requirement: Use only Blue or Black Ballpoint Pen for darkening OMR circles. Gel pens & pencils are strictly prohibited.",
     "5. Prohibited Items: Mobile phones, smart watches, calculators, digital gadgets, and bags are NOT permitted in the hall.",
     "6. Seating Plan: Candidates must sit strictly on the seat allocated to their Roll Number as displayed on the notice board.",
@@ -501,7 +501,7 @@ export function buildAdmitCardWhatsAppMessage(candidate: AdmitCardCandidate): st
   return (
     `*LAKSHYA ACADEMY — LTPE 2026 OFFICIAL ADMIT CARD*\n` +
     `Dear Parent, please find attached the official Admit Card for *${studentName}* (Roll No: *${candidate.registrationNo}*, ${className}).\n` +
-    `📅 Exam Date: 11 October 2026 | 🏢 Venue: Lakshya Academy, Krishna Nagar, Mathura`
+    `📅 Exam Date: 11 October 2026 (10:30 AM – 12:30 PM) | 🏢 Venue: Lakshya Academy, Krishna Nagar, Mathura`
   );
 }
 
