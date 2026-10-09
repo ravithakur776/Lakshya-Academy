@@ -29,6 +29,10 @@ import { PageHeader } from "@/components/dashboard/ui/page-header";
 import { exportToCsv } from "@/lib/csv-exporter";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import {
+  downloadAdmitCardPdf,
+  sendAdmitCardViaWhatsApp,
+} from "@/lib/admit-card-pdf";
 
 interface LtpeRegistration {
   id: string;
@@ -68,6 +72,12 @@ export default function LtpeAdminPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [toastMessage, setToastMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
   const [copiedRegNo, setCopiedRegNo] = useState(false);
+  const [generatingPdfRegNo, setGeneratingPdfRegNo] = useState<string | null>(null);
+  const [whatsappModal, setWhatsappModal] = useState<{
+    candidate: LtpeRegistration;
+    whatsappUrl: string;
+    fileName: string;
+  } | null>(null);
 
   function showToast(text: string, type: "success" | "error" = "success") {
     setToastMessage({ text, type });
@@ -301,22 +311,40 @@ export default function LtpeAdminPage() {
     showToast("Registration number copied to clipboard!");
   }
 
-  // Send WhatsApp Hall Ticket / Reminder
-  function sendWhatsAppNotification(item: LtpeRegistration) {
-    const phone = (item.parentPhone || item.phone || "").replace(/\D/g, "");
-    const formattedPhone = phone.length === 10 ? `91${phone}` : phone;
-    const msg = encodeURIComponent(
-      `*LAKSHYA ACADEMY — LTPE 2026 ADMIT CARD*\n\nDear ${item.parentName || "Parent"},\n\n` +
-        `This is to confirm that *${item.studentName}* is successfully registered for the *Lakshya Talent Promotional Exam (LTPE 2026)*.\n\n` +
-        `📋 *Registration No:* ${item.registrationNo}\n` +
-        `🎯 *Class:* ${item.currentClass || item.class}\n` +
-        `📅 *Exam Date:* ${item.examDate || "11 October 2026 (Sunday)"}\n` +
-        `🏢 *Exam Venue:* Lakshya Academy Campus, 190/2, Krishna Nagar, Mathura\n\n` +
-        `Please reach the examination center 30 minutes before the scheduled time along with this Registration Number.\n\n` +
-        `For any queries, call us at +91 9319098141.\n` +
-        `*Lakshya Academy — Your Dream, Our Mission!*`
-    );
-    window.open(`https://wa.me/${formattedPhone}?text=${msg}`, "_blank");
+  // Send WhatsApp Admit Card PDF + Direct Download + WhatsApp Chat
+  async function handleSendWhatsAppAdmitCard(item: LtpeRegistration) {
+    setGeneratingPdfRegNo(item.registrationNo);
+    try {
+      const res = await sendAdmitCardViaWhatsApp(item, (msg, type) => {
+        showToast(msg, type === "error" ? "error" : "success");
+      });
+      if (res) {
+        setWhatsappModal({
+          candidate: item,
+          whatsappUrl: res.whatsappUrl,
+          fileName: res.fileName,
+        });
+      }
+    } catch (err) {
+      console.error("WhatsApp Admit Card error:", err);
+      showToast("Failed to process Admit Card WhatsApp delivery", "error");
+    } finally {
+      setGeneratingPdfRegNo(null);
+    }
+  }
+
+  // Direct Download Candidate Admit Card PDF
+  async function handleDownloadCandidatePdf(item: LtpeRegistration) {
+    setGeneratingPdfRegNo(item.registrationNo);
+    try {
+      await downloadAdmitCardPdf(item);
+      showToast(`Admit Card PDF downloaded for ${item.studentName}!`);
+    } catch (err) {
+      console.error("PDF download error:", err);
+      showToast("Error generating Admit Card PDF", "error");
+    } finally {
+      setGeneratingPdfRegNo(null);
+    }
   }
 
   function escapeHtml(str: string) {
@@ -625,7 +653,7 @@ export default function LtpeAdminPage() {
                     {/* Parent & Phone */}
                     <td className="px-4 py-4">
                       <p className="font-semibold text-gray-900">{item.parentName}</p>
-                      <div className="flex items-center gap-2 mt-1">
+                      <div className="flex items-center gap-1.5 mt-1">
                         <a
                           href={`tel:${item.parentPhone || item.phone}`}
                           className="text-[11px] text-emerald-700 font-bold hover:underline flex items-center gap-1"
@@ -633,12 +661,28 @@ export default function LtpeAdminPage() {
                           <Phone className="h-3 w-3" />
                           <span>{item.parentPhone || item.phone}</span>
                         </a>
+
                         <button
-                          onClick={() => sendWhatsAppNotification(item)}
-                          className="text-emerald-600 hover:text-emerald-800 p-0.5 rounded bg-emerald-50 border border-emerald-200"
-                          title="WhatsApp Hall Ticket to Parent"
+                          onClick={() => handleSendWhatsAppAdmitCard(item)}
+                          disabled={generatingPdfRegNo === item.registrationNo}
+                          className="inline-flex items-center gap-1 bg-[#25D366] hover:bg-[#1EBE5B] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-2xs transition-all cursor-pointer disabled:opacity-50"
+                          title="Generate & Send Official Admit Card PDF to WhatsApp"
                         >
-                          <MessageCircle className="h-3.5 w-3.5 text-emerald-600" />
+                          {generatingPdfRegNo === item.registrationNo ? (
+                            <Loader2 className="h-3 w-3 animate-spin text-white" />
+                          ) : (
+                            <MessageCircle className="h-3 w-3 text-white" />
+                          )}
+                          <span>PDF</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleDownloadCandidatePdf(item)}
+                          disabled={generatingPdfRegNo === item.registrationNo}
+                          className="p-1 rounded-md text-emerald-700 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all cursor-pointer"
+                          title="Direct Download Admit Card PDF"
+                        >
+                          <Download className="h-3 w-3" />
                         </button>
                       </div>
                     </td>
@@ -825,13 +869,31 @@ export default function LtpeAdminPage() {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-100">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <button
-                    onClick={() => sendWhatsAppNotification(viewingItem)}
-                    className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1EBE5B] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-all cursor-pointer"
+                    onClick={() => handleSendWhatsAppAdmitCard(viewingItem)}
+                    disabled={generatingPdfRegNo === viewingItem.registrationNo}
+                    className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1EBE5B] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50"
                   >
-                    <MessageCircle className="h-4 w-4" />
-                    <span>WhatsApp Hall Ticket</span>
+                    {generatingPdfRegNo === viewingItem.registrationNo ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <MessageCircle className="h-4 w-4" />
+                    )}
+                    <span>WhatsApp Admit Card PDF</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleDownloadCandidatePdf(viewingItem)}
+                    disabled={generatingPdfRegNo === viewingItem.registrationNo}
+                    className="inline-flex items-center gap-2 bg-[#0F7A3C] hover:bg-[#0D6B34] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    {generatingPdfRegNo === viewingItem.registrationNo ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Download className="h-4 w-4" />
+                    )}
+                    <span>Download PDF</span>
                   </button>
 
                   <button
@@ -1102,6 +1164,85 @@ export default function LtpeAdminPage() {
                     <span>Yes, Delete</span>
                   </>
                 )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      {/* 4. WHATSAPP ADMIT CARD PDF DELIVERY MODAL                       */}
+      {/* ═══════════════════════════════════════════════════════════════ */}
+      {whatsappModal && (
+        <div className="fixed inset-0 z-50 bg-gray-950/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in">
+          <div className="bg-white border border-emerald-100 rounded-3xl max-w-md w-full shadow-2xl overflow-hidden p-6 space-y-4 my-8">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-[#25D366] text-white flex items-center justify-center shadow-md shadow-emerald-600/20">
+                  <MessageCircle className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-black text-gray-900 text-sm">
+                    Send Admit Card on WhatsApp
+                  </h3>
+                  <p className="text-[11px] text-gray-500 font-semibold">
+                    {whatsappModal.candidate.studentName} ({whatsappModal.candidate.registrationNo})
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setWhatsappModal(null)}
+                className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="bg-[#F4FAF6] border border-emerald-200 rounded-2xl p-3.5 space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-gray-700">Official Admit Card PDF:</span>
+                <span className="text-[10px] font-black bg-emerald-100 text-[#0F7A3C] px-2 py-0.5 rounded-full">
+                  Downloaded to PC ✅
+                </span>
+              </div>
+              <p className="font-mono text-[11px] text-emerald-950 font-bold truncate">
+                {whatsappModal.fileName}
+              </p>
+            </div>
+
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-xs text-gray-700 space-y-2">
+              <p className="font-bold text-gray-900 text-[11px] uppercase tracking-wide">
+                How to send the PDF file in WhatsApp:
+              </p>
+              <div className="space-y-1.5 text-[11px] text-gray-600 leading-relaxed">
+                <p>
+                  1. WhatsApp chat is opened for <strong>{whatsappModal.candidate.parentPhone || whatsappModal.candidate.phone}</strong>.
+                </p>
+                <p>
+                  2. <strong>Drag & drop</strong> the downloaded PDF file from your browser's bottom download bar into the chat box, OR click <strong>📎 (Attach) → Document</strong>.
+                </p>
+                <p>
+                  3. Click <strong>Send</strong>! The official PDF is delivered directly to the candidate!
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 pt-1">
+              <a
+                href={whatsappModal.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1EBE5B] text-white text-xs font-bold py-3 px-4 rounded-xl shadow-md transition-all cursor-pointer"
+              >
+                <MessageCircle className="h-4 w-4" />
+                <span>Open WhatsApp Chat</span>
+              </a>
+              <button
+                type="button"
+                onClick={() => handleDownloadCandidatePdf(whatsappModal.candidate)}
+                className="inline-flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold py-3 px-3.5 rounded-xl transition-all cursor-pointer"
+                title="Download PDF again"
+              >
+                <Download className="h-4 w-4" />
               </button>
             </div>
           </div>
