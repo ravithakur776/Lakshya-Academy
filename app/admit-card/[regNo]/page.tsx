@@ -66,7 +66,7 @@ export default function PublicAdmitCardPage({
             examDate: data.exam_date || "11 October 2026 (Sunday)",
             examCenter: data.exam_center || "Lakshya Academy Campus, 190/2, Krishna Nagar, Mathura",
             reportingTime: "10:00 AM (Gate closes at 10:15 AM)",
-            examTiming: "10:30 AM – 12:30 PM (2 Hours)",
+            examTiming: "10:30 AM – 12:00 PM (1.5 Hours)",
           });
           return;
         }
@@ -84,7 +84,7 @@ export default function PublicAdmitCardPage({
               setCandidate({
                 ...found,
                 reportingTime: "10:00 AM (Gate closes at 10:15 AM)",
-                examTiming: "10:30 AM – 12:30 PM (2 Hours)",
+                examTiming: "10:30 AM – 12:00 PM (1.5 Hours)",
               });
               return;
             }
@@ -104,7 +104,7 @@ export default function PublicAdmitCardPage({
           examDate: "11 October 2026 (Sunday)",
           examCenter: "Lakshya Academy Campus, 190/2, Krishna Nagar, Mathura",
           reportingTime: "10:00 AM (Gate closes at 10:15 AM)",
-          examTiming: "10:30 AM – 12:30 PM (2 Hours)",
+          examTiming: "10:30 AM – 12:00 PM (1.5 Hours)",
         });
       } catch (err) {
         console.error("Admit card fetch error:", err);
@@ -407,7 +407,7 @@ export default function PublicAdmitCardPage({
               <div>
                 <p className="text-[10px] font-bold text-gray-500 uppercase">Exam Duration</p>
                 <p className="text-sm font-bold text-gray-900 mt-0.5">
-                  10:30 AM – 12:30 PM (2 Hours)
+                  10:30 AM – 12:00 PM (1.5 Hours)
                 </p>
               </div>
             </div>

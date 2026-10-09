@@ -404,7 +404,7 @@ export default function LtpeAdminPage() {
             <div class="field"><div class="label">City / Town</div><div class="value">${escapeHtml(item.city || "Mathura")}</div></div>
             <div class="field"><div class="label">Official Exam Date</div><div class="value">${escapeHtml(item.examDate || "11 October 2026 (Sunday)")}</div></div>
             <div class="field"><div class="label">Reporting Time</div><div class="value">10:00 AM (Gate closes at 10:15 AM)</div></div>
-            <div class="field"><div class="label">Exam Duration</div><div class="value">10:30 AM – 12:30 PM (2 Hours)</div></div>
+            <div class="field"><div class="label">Exam Duration</div><div class="value">10:30 AM – 12:00 PM (1.5 Hours)</div></div>
             <div class="field"><div class="label">Exam Fee Status</div><div class="value">₹100 (Registration Confirmed)</div></div>
           </div>
 
@@ -416,7 +416,7 @@ export default function LtpeAdminPage() {
           <div class="footer-note">
             <strong>Instructions for Candidate:</strong><br/>
             1. <strong>Reporting Time:</strong> Arrive at the exam center strictly by 10:00 AM. Entry will close at 10:15 AM sharp.<br/>
-            2. <strong>Exam Pattern:</strong> Objective Multiple Choice Questions covering Physics, Chemistry &amp; Mathematics (10:30 AM – 12:30 PM).<br/>
+            2. <strong>Exam Pattern:</strong> Objective Multiple Choice Questions covering Physics, Chemistry &amp; Mathematics (10:30 AM – 12:00 PM).<br/>
             3. Carry a valid student ID card or school badge along with this hall ticket copy.<br/>
             4. For helpline / enquiries, contact <strong>+91 9319098141 / +91 7895060239</strong>.
           </div>

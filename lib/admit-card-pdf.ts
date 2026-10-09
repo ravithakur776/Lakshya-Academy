@@ -301,7 +301,7 @@ export async function buildAdmitCardPdf(candidate: AdmitCardCandidate): Promise<
   doc.text("Exam Duration:", schX, schY);
   doc.setTextColor(darkText[0], darkText[1], darkText[2]);
   doc.setFontSize(8);
-  doc.text(candidate.examTiming || "10:30 AM – 12:30 PM (2 Hours)", schX + 32, schY);
+  doc.text(candidate.examTiming || "10:30 AM – 12:00 PM (1.5 Hours)", schX + 32, schY);
 
   // Right sub-column: Venue
   const venueX = margin + 98;
@@ -501,7 +501,7 @@ export function buildAdmitCardWhatsAppMessage(candidate: AdmitCardCandidate): st
   return (
     `*LAKSHYA ACADEMY — LTPE 2026 OFFICIAL ADMIT CARD*\n` +
     `Dear Parent, please find attached the official Admit Card for *${studentName}* (Roll No: *${candidate.registrationNo}*, ${className}).\n` +
-    `📅 Exam Date: 11 October 2026 (10:30 AM – 12:30 PM) | 🏢 Venue: Lakshya Academy, Krishna Nagar, Mathura`
+    `📅 Exam Date: 11 October 2026 (10:30 AM – 12:00 PM) | 🏢 Venue: Lakshya Academy, Krishna Nagar, Mathura`
   );
 }
 
