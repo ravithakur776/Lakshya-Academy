@@ -7,11 +7,11 @@ import { LtpeSyllabusSection } from "@/components/sections/ltpe-syllabus-section
 import { LTPE_2026_CONFIG } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "LTPE 2026 — Lakshya Talent Promotional Exam 2026 | Register Online (₹100 Fee) & View Syllabus",
-  description: "Register for LTPE 2026 — Lakshya Academy's scholarship exam for Class 8, 9 & 10 students. Registration Fee: ₹100. Win up to 100% scholarship. Exam Date: 11 October 2026. Download official syllabus.",
+  title: "LTPE 2026 — Lakshya Talent Promotional Exam 2026 | Register Online (Free Registration) & View Syllabus",
+  description: "Register for LTPE 2026 — Lakshya Academy's scholarship exam for Class 8, 9 & 10 students. 100% Free Registration. Win up to 100% scholarship. Exam Date: 25 October 2026. Download official syllabus.",
   openGraph: {
     title: "LTPE 2026 Scholarship Exam & Syllabus | Lakshya Academy Mathura",
-    description: "Win up to 100% scholarship for Class 8, 9 & 10 students. Registration Fee: ₹100. Exam Date: 11 October 2026.",
+    description: "Win up to 100% scholarship for Class 8, 9 & 10 students. 100% Free Registration. Exam Date: 25 October 2026.",
   },
 };
 
@@ -48,11 +48,11 @@ export default function LtpePage() {
               <div className="grid grid-cols-3 gap-3 pt-2">
                 <div className="bg-white border border-emerald-100 rounded-2xl p-3.5 shadow-sm text-center">
                   <Calendar className="h-4 w-4 text-[#0F7A3C] mx-auto mb-1" />
-                  <p className="font-bold text-emerald-950 text-xs sm:text-sm">11 Oct 2026</p>
+                  <p className="font-bold text-emerald-950 text-xs sm:text-sm">25 Oct 2026</p>
                   <p className="text-[10px] text-emerald-800 font-semibold">Exam Date</p>
                 </div>
                 <div className="bg-white border border-emerald-100 rounded-2xl p-3.5 shadow-sm text-center">
-                  <span className="text-sm font-black text-[#0F7A3C] block mb-0.5">₹100</span>
+                  <span className="text-sm font-black text-[#0F7A3C] block mb-0.5">FREE</span>
                   <p className="font-bold text-emerald-950 text-xs sm:text-sm">Exam Fee</p>
                   <p className="text-[10px] text-emerald-800 font-semibold">Registration</p>
                 </div>
@@ -67,7 +67,7 @@ export default function LtpePage() {
               <div className="space-y-3 pt-2 text-xs md:text-sm font-semibold text-emerald-950">
                 <div className="flex items-center gap-2.5">
                   <CheckCircle className="h-4 w-4 text-[#0F7A3C] flex-shrink-0" />
-                  <span>Nominal Registration Fee: ₹100 Only</span>
+                  <span>100% Free Online Registration (No Fee)</span>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <CheckCircle className="h-4 w-4 text-[#0F7A3C] flex-shrink-0" />
@@ -96,7 +96,7 @@ export default function LtpePage() {
             <div className="lg:col-span-6 bg-white border border-emerald-200/90 rounded-3xl p-6 md:p-8 shadow-xl relative">
               <div className="mb-6 border-b border-emerald-100 pb-4 text-center">
                 <span className="text-[10px] font-bold uppercase tracking-widest bg-emerald-50 text-[#0F7A3C] border border-emerald-200 px-3 py-1 rounded-full">
-                  REGISTRATION FORM (₹100 FEE)
+                  FREE REGISTRATION FORM
                 </span>
                 <h2 className="font-heading font-black text-2xl text-emerald-950 mt-2">Fill Student Details</h2>
                 <p className="text-xs text-emerald-800 font-semibold mt-1">Get instant admit card and hall ticket on mobile</p>
@@ -120,7 +120,7 @@ export default function LtpePage() {
               Scholarship Tiers
             </span>
             <h2 className="font-heading text-3xl font-black text-emerald-950 mt-3">Up to 100% Fee Waiver</h2>
-            <p className="text-sm font-semibold text-emerald-800 mt-2">Awarded based on merit performance in LTPE 2026 on 11 October 2026.</p>
+            <p className="text-sm font-semibold text-emerald-800 mt-2">Awarded based on merit performance in LTPE 2026 on 25 October 2026.</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">

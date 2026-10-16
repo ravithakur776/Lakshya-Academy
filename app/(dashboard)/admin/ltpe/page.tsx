@@ -41,6 +41,7 @@ interface LtpeRegistration {
   parentName: string;
   parentPhone: string;
   phone?: string;
+  studentPhone?: string;
   parentEmail?: string;
   currentClass: string;
   class?: string;
@@ -105,13 +106,14 @@ export default function LtpeAdminPage() {
             parentName: row.parent_name,
             parentPhone: row.parent_phone,
             phone: row.parent_phone,
+            studentPhone: row.student_phone || (row.gender && row.gender.startsWith("SP:") ? row.gender.replace("SP:", "") : ""),
             parentEmail: row.parent_email || "",
             currentClass: row.current_class,
             class: row.current_class,
             city: row.city || "Mathura",
             school: row.school || "",
             status: row.status || "CONFIRMED",
-            examDate: row.exam_date || "11 October 2026",
+            examDate: row.exam_date || "25 October 2026",
             examCenter: row.exam_center || "Lakshya Academy Campus, Krishna Nagar, Mathura",
             createdAt: row.created_at,
           }));
@@ -179,11 +181,12 @@ export default function LtpeAdminPage() {
       "Student Name": item.studentName || "",
       "Class": item.currentClass || item.class || "",
       "Parent Name": item.parentName || "",
-      "Parent Phone": item.parentPhone || item.phone || "",
+      "Parents Phone": item.parentPhone || item.phone || "",
+      "Student Phone": item.studentPhone || "",
       "Email": item.parentEmail || "",
       "School": item.school || "",
       "City": item.city || "Mathura",
-      "Exam Date": item.examDate || "11 October 2026",
+      "Exam Date": item.examDate || "25 October 2026",
       "Status": item.status || "CONFIRMED",
       "Registration Date": item.createdAt ? new Date(item.createdAt).toLocaleString() : "",
     }));
@@ -201,19 +204,24 @@ export default function LtpeAdminPage() {
       // 1. Direct Supabase update
       try {
         const supabase = createClient();
+        const updatePayload: any = {
+          student_name: editingItem.studentName,
+          parent_name: editingItem.parentName,
+          parent_phone: editingItem.parentPhone || editingItem.phone,
+          parent_email: editingItem.parentEmail || null,
+          current_class: editingItem.currentClass || editingItem.class,
+          school: editingItem.school || null,
+          city: editingItem.city || "Mathura",
+          status: editingItem.status || "CONFIRMED",
+          exam_date: editingItem.examDate || "25 October 2026",
+          updated_at: new Date().toISOString(),
+        };
+        if (editingItem.studentPhone) {
+          updatePayload.gender = `SP:${editingItem.studentPhone}`;
+        }
         await supabase
           .from("ltpe_registrations")
-          .update({
-            student_name: editingItem.studentName,
-            parent_name: editingItem.parentName,
-            parent_phone: editingItem.parentPhone || editingItem.phone,
-            parent_email: editingItem.parentEmail || null,
-            current_class: editingItem.currentClass || editingItem.class,
-            school: editingItem.school || null,
-            city: editingItem.city || "Mathura",
-            status: editingItem.status || "CONFIRMED",
-            updated_at: new Date().toISOString(),
-          })
+          .update(updatePayload)
           .eq("registration_no", editingItem.registrationNo);
       } catch (sbErr) {
         console.warn("Client Supabase update handled:", sbErr);
@@ -399,13 +407,14 @@ export default function LtpeAdminPage() {
             <div class="field"><div class="label">Candidate Name</div><div class="value">${escapeHtml(item.studentName)}</div></div>
             <div class="field"><div class="label">Class</div><div class="value">${escapeHtml(item.currentClass || item.class || "")}</div></div>
             <div class="field"><div class="label">Parent / Guardian</div><div class="value">${escapeHtml(item.parentName)}</div></div>
-            <div class="field"><div class="label">Mobile Number</div><div class="value">${escapeHtml(item.parentPhone || item.phone || "")}</div></div>
+            <div class="field"><div class="label">Parents Mobile (WhatsApp)</div><div class="value">${escapeHtml(item.parentPhone || item.phone || "")}</div></div>
+            <div class="field"><div class="label">Student Mobile No.</div><div class="value">${escapeHtml(item.studentPhone || "Not specified")}</div></div>
             <div class="field"><div class="label">School</div><div class="value">${escapeHtml(item.school || "Not specified")}</div></div>
             <div class="field"><div class="label">City / Town</div><div class="value">${escapeHtml(item.city || "Mathura")}</div></div>
-            <div class="field"><div class="label">Official Exam Date</div><div class="value">${escapeHtml(item.examDate || "11 October 2026 (Sunday)")}</div></div>
+            <div class="field"><div class="label">Official Exam Date</div><div class="value">${escapeHtml(item.examDate || "25 October 2026 (Sunday)")}</div></div>
             <div class="field"><div class="label">Reporting Time</div><div class="value">10:00 AM (Gate closes at 10:15 AM)</div></div>
             <div class="field"><div class="label">Exam Duration</div><div class="value">10:30 AM – 12:00 PM (1.5 Hours)</div></div>
-            <div class="field"><div class="label">Exam Fee Status</div><div class="value">₹100 (Registration Confirmed)</div></div>
+            <div class="field"><div class="label">Exam Fee Status</div><div class="value">FREE (Registration Confirmed)</div></div>
           </div>
 
           <div class="field" style="margin-bottom: 20px;">
@@ -458,7 +467,7 @@ export default function LtpeAdminPage() {
 
       <PageHeader
         title="LTPE 2026 Registrations"
-        description="Manage Lakshya Talent Promotional Exam 2026 (11 October 2026) candidates, edit details & issue hall tickets"
+        description="Manage Lakshya Talent Promotional Exam 2026 (25 October 2026) candidates, edit details & issue hall tickets"
         icon={ClipboardList}
         breadcrumbs={[{ label: "Admin" }, { label: "LTPE 2026" }]}
         actions={
@@ -660,9 +669,10 @@ export default function LtpeAdminPage() {
                         <a
                           href={`tel:${item.parentPhone || item.phone}`}
                           className="text-[11px] text-emerald-700 font-bold hover:underline flex items-center gap-1"
+                          title="Parent's Mobile"
                         >
                           <Phone className="h-3 w-3" />
-                          <span>{item.parentPhone || item.phone}</span>
+                          <span>P: {item.parentPhone || item.phone}</span>
                         </a>
 
                         <button
@@ -688,6 +698,14 @@ export default function LtpeAdminPage() {
                           <Download className="h-3 w-3" />
                         </button>
                       </div>
+                      {item.studentPhone && (
+                        <p className="text-[11px] text-gray-600 mt-1 flex items-center gap-1">
+                          <span className="font-semibold text-gray-500">Student:</span>
+                          <a href={`tel:${item.studentPhone}`} className="hover:underline text-gray-800">
+                            {item.studentPhone}
+                          </a>
+                        </p>
+                      )}
                     </td>
 
                     {/* Status */}
@@ -820,10 +838,18 @@ export default function LtpeAdminPage() {
                 </div>
 
                 <div className="bg-gray-50/80 p-3.5 rounded-xl border border-gray-100">
-                  <p className="text-[10px] font-bold text-gray-500 uppercase">Mobile Number (WhatsApp)</p>
+                  <p className="text-[10px] font-bold text-gray-500 uppercase">Parents Mobile (WhatsApp)</p>
                   <p className="font-black text-gray-900 text-sm mt-0.5 flex items-center gap-1.5">
                     <Phone className="h-3.5 w-3.5 text-[#0F7A3C]" />
                     {viewingItem.parentPhone || viewingItem.phone}
+                  </p>
+                </div>
+
+                <div className="bg-gray-50/80 p-3.5 rounded-xl border border-gray-100">
+                  <p className="text-[10px] font-bold text-gray-500 uppercase">Student's Mobile Number</p>
+                  <p className="font-black text-gray-900 text-sm mt-0.5 flex items-center gap-1.5">
+                    <Phone className="h-3.5 w-3.5 text-gray-500" />
+                    {viewingItem.studentPhone || "Not specified"}
                   </p>
                 </div>
 
@@ -849,13 +875,13 @@ export default function LtpeAdminPage() {
                   <p className="text-[10px] font-bold text-gray-500 uppercase">Official Exam Date</p>
                   <p className="font-black text-emerald-950 text-sm mt-0.5 flex items-center gap-1.5">
                     <Calendar className="h-3.5 w-3.5 text-[#0F7A3C]" />
-                    {viewingItem.examDate || "11 October 2026"}
+                    {viewingItem.examDate || "25 October 2026"}
                   </p>
                 </div>
 
                 <div className="bg-gray-50/80 p-3.5 rounded-xl border border-gray-100">
                   <p className="text-[10px] font-bold text-gray-500 uppercase">Exam Fee</p>
-                  <p className="font-black text-[#0F7A3C] text-sm mt-0.5">₹100 (Registration Confirmed)</p>
+                  <p className="font-black text-[#0F7A3C] text-sm mt-0.5">FREE (Registration Confirmed)</p>
                 </div>
               </div>
 
@@ -985,10 +1011,10 @@ export default function LtpeAdminPage() {
                   />
                 </div>
 
-                {/* Phone */}
+                {/* Parents Mobile */}
                 <div>
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                    Mobile Number *
+                    Parents Mobile No. (WhatsApp) *
                   </label>
                   <input
                     type="text"
@@ -1001,6 +1027,25 @@ export default function LtpeAdminPage() {
                         phone: e.target.value,
                       })
                     }
+                    className="w-full bg-[#F4FAF6] border border-emerald-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-gray-900 focus:outline-none focus:border-[#0F7A3C] focus:bg-white"
+                  />
+                </div>
+
+                {/* Student's Mobile */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                    Student's Mobile No.
+                  </label>
+                  <input
+                    type="text"
+                    value={editingItem.studentPhone || ""}
+                    onChange={(e) =>
+                      setEditingItem({
+                        ...editingItem,
+                        studentPhone: e.target.value,
+                      })
+                    }
+                    placeholder="10-digit student mobile"
                     className="w-full bg-[#F4FAF6] border border-emerald-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-gray-900 focus:outline-none focus:border-[#0F7A3C] focus:bg-white"
                   />
                 </div>
@@ -1080,7 +1125,7 @@ export default function LtpeAdminPage() {
                   </label>
                   <input
                     type="text"
-                    value={editingItem.examDate || "11 October 2026"}
+                    value={editingItem.examDate || "25 October 2026"}
                     onChange={(e) => setEditingItem({ ...editingItem, examDate: e.target.value })}
                     className="w-full bg-[#F4FAF6] border border-emerald-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-gray-900 focus:outline-none focus:border-[#0F7A3C] focus:bg-white"
                   />

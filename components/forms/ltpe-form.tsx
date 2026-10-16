@@ -11,6 +11,7 @@ const schema = z.object({
   studentName: z.string().min(2, "Student name is required"),
   parentName: z.string().min(2, "Parent/Guardian name is required"),
   phone: z.string().regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number"),
+  studentPhone: z.string().regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number"),
   currentClass: z.enum(["Class 8", "Class 9", "Class 10"], { message: "Select Class 8, 9, or 10" }),
   examDate: z.string(),
   schoolName: z.string().min(2, "School name is required"),
@@ -33,7 +34,7 @@ export function LtpeForm() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      examDate: "11 October 2026",
+      examDate: "25 October 2026",
     },
   });
 
@@ -43,7 +44,12 @@ export function LtpeForm() {
       const res = await fetch("/api/ltpe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, examDate: "11 October 2026" }),
+        body: JSON.stringify({
+          ...data,
+          parentPhone: data.phone,
+          studentPhone: data.studentPhone,
+          examDate: "25 October 2026",
+        }),
       });
 
       const result = await res.json();
@@ -54,19 +60,24 @@ export function LtpeForm() {
       // Dual-layer insurance: Direct client write to Supabase
       try {
         const supabase = createClient();
-        await supabase.from("ltpe_registrations").insert([
-          {
-            registration_no: regNo,
-            student_name: data.studentName,
-            parent_name: data.parentName,
-            parent_phone: data.phone,
-            current_class: data.currentClass,
-            school: data.schoolName,
-            city: data.city || "Mathura",
-            exam_date: "11 October 2026",
-            status: "CONFIRMED",
-          },
+        const baseSb = {
+          registration_no: regNo,
+          student_name: data.studentName,
+          parent_name: data.parentName,
+          parent_phone: data.phone,
+          current_class: data.currentClass,
+          school: data.schoolName,
+          city: data.city || "Mathura",
+          gender: data.studentPhone ? `SP:${data.studentPhone}` : null,
+          exam_date: "25 October 2026",
+          status: "CONFIRMED",
+        };
+        const { error: insErr } = await supabase.from("ltpe_registrations").insert([
+          { ...baseSb, student_phone: data.studentPhone },
         ]);
+        if (insErr && insErr.code === "42703") {
+          await supabase.from("ltpe_registrations").insert([baseSb]);
+        }
       } catch (clientErr) {
         console.warn("[LtpeForm] Client Supabase sync handled:", clientErr);
       }
@@ -93,9 +104,9 @@ export function LtpeForm() {
 
         <div className="bg-white border border-emerald-200 rounded-2xl p-4 text-xs font-medium text-emerald-900 space-y-1">
           <p className="font-bold flex items-center justify-center gap-1.5 text-[#0F7A3C]">
-            <Calendar className="h-4 w-4" /> Official Exam Date: 11 October 2026 (Sunday)
+            <Calendar className="h-4 w-4" /> Official Exam Date: 25 October 2026 (Sunday)
           </p>
-          <p>Registration Fee: <strong>₹100 Only</strong> (Collect Admit Card / Hall Ticket on Exam Day)</p>
+          <p>Registration Fee: <strong className="text-[#0F7A3C]">100% Free</strong> (Admit Card Generated)</p>
           <p>Location: Lakshya Academy Campus, Krishna Nagar, Mathura</p>
         </div>
 
@@ -133,7 +144,7 @@ export function LtpeForm() {
         </div>
 
         <p className="text-xs text-emerald-900/80 font-medium">
-          A digital hall ticket and WhatsApp confirmation will be sent to your registered phone number.
+          A digital hall ticket and WhatsApp confirmation will be sent to your registered mobile number.
         </p>
 
         <button
@@ -182,20 +193,39 @@ export function LtpeForm() {
         </div>
       </div>
 
-      {/* Mobile & Class */}
+      {/* 2 Mobile Numbers: Parents & Students */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-1">
-            Mobile Number (WhatsApp) *
+            Parents Mobile No. (WhatsApp) *
           </label>
           <input
             {...register("phone")}
-            placeholder="10-digit mobile number"
+            type="tel"
+            maxLength={10}
+            placeholder="10-digit parent's mobile"
             className="w-full bg-[#F4FAF6] border border-emerald-200 rounded-xl px-4 py-3 text-sm text-emerald-950 placeholder:text-emerald-700/50 font-medium focus:outline-none focus:border-[#0F7A3C] focus:bg-white"
           />
           {errors.phone && <p className="text-[11px] font-bold text-red-600 mt-1">{errors.phone.message}</p>}
         </div>
 
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-1">
+            Student's Mobile No. *
+          </label>
+          <input
+            {...register("studentPhone")}
+            type="tel"
+            maxLength={10}
+            placeholder="10-digit student's mobile"
+            className="w-full bg-[#F4FAF6] border border-emerald-200 rounded-xl px-4 py-3 text-sm text-emerald-950 placeholder:text-emerald-700/50 font-medium focus:outline-none focus:border-[#0F7A3C] focus:bg-white"
+          />
+          {errors.studentPhone && <p className="text-[11px] font-bold text-red-600 mt-1">{errors.studentPhone.message}</p>}
+        </div>
+      </div>
+
+      {/* Current Class & School */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-1 flex items-center justify-between">
             <span>Current Class *</span>
@@ -214,9 +244,21 @@ export function LtpeForm() {
           </select>
           {errors.currentClass && <p className="text-[11px] font-bold text-red-600 mt-1">{errors.currentClass.message}</p>}
         </div>
+
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-1">
+            School Name *
+          </label>
+          <input
+            {...register("schoolName")}
+            placeholder="Current school name"
+            className="w-full bg-[#F4FAF6] border border-emerald-200 rounded-xl px-4 py-3 text-sm text-emerald-950 placeholder:text-emerald-700/50 font-medium focus:outline-none focus:border-[#0F7A3C] focus:bg-white"
+          />
+          {errors.schoolName && <p className="text-[11px] font-bold text-red-600 mt-1">{errors.schoolName.message}</p>}
+        </div>
       </div>
 
-      {/* ── OFFICIAL EXAM DATE (11 OCTOBER 2026 ONLY) ──────────────────── */}
+      {/* ── OFFICIAL EXAM DATE (25 OCTOBER 2026 ONLY) ──────────────────── */}
       <div>
         <label className="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-2 flex items-center justify-between">
           <span className="flex items-center gap-1.5">
@@ -233,7 +275,7 @@ export function LtpeForm() {
               <Calendar className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-black text-base font-heading leading-tight">11 October 2026 (Sunday)</p>
+              <p className="font-black text-base font-heading leading-tight">25 October 2026 (Sunday)</p>
               <p className="text-xs text-emerald-100 font-semibold mt-0.5">Lakshya Academy Campus, Krishna Nagar, Mathura</p>
             </div>
           </div>
@@ -241,50 +283,36 @@ export function LtpeForm() {
             Confirmed
           </span>
         </div>
-        <input type="hidden" value="11 October 2026" {...register("examDate")} />
+        <input type="hidden" value="25 October 2026" {...register("examDate")} />
       </div>
 
-      {/* School & City */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-1">
-            School Name *
-          </label>
-          <input
-            {...register("schoolName")}
-            placeholder="Current school name"
-            className="w-full bg-[#F4FAF6] border border-emerald-200 rounded-xl px-4 py-3 text-sm text-emerald-950 placeholder:text-emerald-700/50 font-medium focus:outline-none focus:border-[#0F7A3C] focus:bg-white"
-          />
-          {errors.schoolName && <p className="text-[11px] font-bold text-red-600 mt-1">{errors.schoolName.message}</p>}
-        </div>
-
-        <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-1">
-            City / Town *
-          </label>
-          <input
-            {...register("city")}
-            placeholder="e.g. Mathura, Vrindavan, Kosi"
-            className="w-full bg-[#F4FAF6] border border-emerald-200 rounded-xl px-4 py-3 text-sm text-emerald-950 placeholder:text-emerald-700/50 font-medium focus:outline-none focus:border-[#0F7A3C] focus:bg-white"
-          />
-          {errors.city && <p className="text-[11px] font-bold text-red-600 mt-1">{errors.city.message}</p>}
-        </div>
+      {/* City */}
+      <div>
+        <label className="block text-xs font-bold uppercase tracking-wider text-emerald-950 mb-1">
+          City / Town *
+        </label>
+        <input
+          {...register("city")}
+          placeholder="e.g. Mathura, Vrindavan, Kosi"
+          className="w-full bg-[#F4FAF6] border border-emerald-200 rounded-xl px-4 py-3 text-sm text-emerald-950 placeholder:text-emerald-700/50 font-medium focus:outline-none focus:border-[#0F7A3C] focus:bg-white"
+        />
+        {errors.city && <p className="text-[11px] font-bold text-red-600 mt-1">{errors.city.message}</p>}
       </div>
 
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full flex items-center justify-center gap-2 bg-[#0F7A3C] hover:bg-[#0D6B34] text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-700/20 transition-all text-sm disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-2 bg-[#0F7A3C] hover:bg-[#0D6B34] text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-700/20 transition-all text-sm disabled:opacity-50 cursor-pointer"
       >
         {isSubmitting ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin" />
-            <span>Processing LTPE Registration...</span>
+            <span>Processing Free LTPE Registration...</span>
           </>
         ) : (
           <>
             <Sparkles className="h-4 w-4" />
-            <span>Complete Registration (₹100 Fee)</span>
+            <span>Complete Free Registration</span>
           </>
         )}
       </button>

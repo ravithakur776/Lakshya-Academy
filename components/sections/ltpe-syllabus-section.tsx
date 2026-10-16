@@ -109,7 +109,7 @@ export function LtpeSyllabusSection() {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 mt-4 text-xs font-bold text-emerald-900">
             <span className="bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-200">
-              📅 Exam Date: 11 October 2026
+              📅 Exam Date: 25 October 2026
             </span>
             <span className="bg-amber-100 text-amber-950 px-3 py-1 rounded-full border border-amber-300">
               🎯 Classes 8, 9 & 10
@@ -255,7 +255,7 @@ export function LtpeSyllabusSection() {
                 href="#register"
                 className="bg-amber-400 hover:bg-amber-300 text-gray-950 font-black text-xs px-5 py-2.5 rounded-xl transition-all shadow-md flex-shrink-0"
               >
-                Register for LTPE 2026 (₹100)
+                Register for LTPE 2026 (Free)
               </a>
             </div>
           </div>

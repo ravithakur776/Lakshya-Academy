@@ -26,12 +26,14 @@ export interface MemoryLtpe {
   parentName: string;
   parentPhone: string;
   phone?: string;
+  studentPhone?: string;
   parentEmail?: string;
   currentClass: string;
   class?: string;
   school?: string;
   city: string;
   gender?: string;
+  examDate?: string;
   status: string;
   createdAt: string;
 }

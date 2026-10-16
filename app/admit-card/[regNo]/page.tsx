@@ -57,13 +57,14 @@ export default function PublicAdmitCardPage({
             parentName: data.parent_name,
             parentPhone: data.parent_phone,
             phone: data.parent_phone,
+            studentPhone: data.student_phone || (data.gender && data.gender.startsWith("SP:") ? data.gender.replace("SP:", "") : ""),
             parentEmail: data.parent_email || "",
             currentClass: data.current_class,
             class: data.current_class,
             school: data.school || "Not specified",
             city: data.city || "Mathura",
             status: data.status || "CONFIRMED",
-            examDate: data.exam_date || "11 October 2026 (Sunday)",
+            examDate: data.exam_date || "25 October 2026 (Sunday)",
             examCenter: data.exam_center || "Lakshya Academy Campus, 190/2, Krishna Nagar, Mathura",
             reportingTime: "10:00 AM (Gate closes at 10:15 AM)",
             examTiming: "10:30 AM – 12:00 PM (1.5 Hours)",
@@ -97,11 +98,12 @@ export default function PublicAdmitCardPage({
           studentName: "Registered Candidate",
           parentName: "Parent / Guardian",
           parentPhone: "Verified Mobile",
+          studentPhone: "Verified Student Mobile",
           currentClass: "Class 9",
           school: "Lakshya Partner School",
           city: "Mathura",
           status: "CONFIRMED",
-          examDate: "11 October 2026 (Sunday)",
+          examDate: "25 October 2026 (Sunday)",
           examCenter: "Lakshya Academy Campus, 190/2, Krishna Nagar, Mathura",
           reportingTime: "10:00 AM (Gate closes at 10:15 AM)",
           examTiming: "10:30 AM – 12:00 PM (1.5 Hours)",
@@ -319,7 +321,7 @@ export default function PublicAdmitCardPage({
                 </p>
                 <span className="inline-flex items-center gap-1 text-xs font-black text-[#0F7A3C] bg-emerald-100/80 px-2.5 py-1 rounded-full mt-0.5 border border-emerald-300">
                   <CheckCircle className="h-3 w-3" />
-                  <span>₹100 Paid (Verified)</span>
+                  <span>FREE (Registration Confirmed)</span>
                 </span>
               </div>
             </div>
@@ -344,7 +346,7 @@ export default function PublicAdmitCardPage({
               </div>
 
               <div className="bg-gray-50/80 p-3 rounded-xl border border-gray-100">
-                <p className="text-[10px] font-bold text-gray-500 uppercase">Registered Mobile Number</p>
+                <p className="text-[10px] font-bold text-gray-500 uppercase">Parents Mobile (WhatsApp)</p>
                 <p className="text-sm font-bold text-emerald-800 mt-0.5 flex items-center gap-1.5">
                   <Phone className="h-3.5 w-3.5 text-[#0F7A3C]" />
                   <span>{candidate.parentPhone || candidate.phone || "—"}</span>
@@ -352,16 +354,24 @@ export default function PublicAdmitCardPage({
               </div>
 
               <div className="bg-gray-50/80 p-3 rounded-xl border border-gray-100">
-                <p className="text-[10px] font-bold text-gray-500 uppercase">City / Town</p>
-                <p className="text-sm font-bold text-gray-900 mt-0.5">
-                  {candidate.city || "Mathura"}
+                <p className="text-[10px] font-bold text-gray-500 uppercase">Student's Mobile Number</p>
+                <p className="text-sm font-bold text-gray-900 mt-0.5 flex items-center gap-1.5">
+                  <Phone className="h-3.5 w-3.5 text-gray-500" />
+                  <span>{candidate.studentPhone || "—"}</span>
                 </p>
               </div>
 
-              <div className="bg-gray-50/80 p-3 rounded-xl border border-gray-100 sm:col-span-2">
+              <div className="bg-gray-50/80 p-3 rounded-xl border border-gray-100">
                 <p className="text-[10px] font-bold text-gray-500 uppercase">School Name</p>
                 <p className="text-sm font-bold text-gray-900 mt-0.5">
                   {candidate.school || "School Not Specified"}
+                </p>
+              </div>
+
+              <div className="bg-gray-50/80 p-3 rounded-xl border border-gray-100">
+                <p className="text-[10px] font-bold text-gray-500 uppercase">City / Town</p>
+                <p className="text-sm font-bold text-gray-900 mt-0.5">
+                  {candidate.city || "Mathura"}
                 </p>
               </div>
             </div>
@@ -392,7 +402,7 @@ export default function PublicAdmitCardPage({
               <div>
                 <p className="text-[10px] font-bold text-gray-500 uppercase">Exam Date</p>
                 <p className="text-sm font-black text-[#0F7A3C] mt-0.5 flex items-center gap-1.5">
-                  <span>{candidate.examDate || "11 October 2026 (Sunday)"}</span>
+                  <span>{candidate.examDate || "25 October 2026 (Sunday)"}</span>
                 </p>
               </div>
 

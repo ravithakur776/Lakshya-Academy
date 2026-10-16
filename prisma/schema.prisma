@@ -327,10 +327,11 @@ model LtpeRegistration {
   school       String?
   city         String?
 
-  // Parent
-  parentName  String  @map("parent_name")
-  parentPhone String  @map("parent_phone")
-  parentEmail String? @map("parent_email")
+  // Parent & Student Contact
+  parentName   String  @map("parent_name")
+  parentPhone  String  @map("parent_phone")
+  studentPhone String? @map("student_phone")
+  parentEmail  String? @map("parent_email")
 
   // Exam
   examCenter     String?   @map("exam_center")

@@ -27,13 +27,14 @@ export async function GET() {
           parentName: row.parent_name,
           parentPhone: row.parent_phone,
           phone: row.parent_phone,
+          studentPhone: row.student_phone || (row.gender && row.gender.startsWith("SP:") ? row.gender.replace("SP:", "") : ""),
           parentEmail: row.parent_email,
           currentClass: row.current_class,
           class: row.current_class,
           school: row.school || "Not specified",
           city: row.city || "Mathura",
           gender: row.gender || "N/A",
-          examDate: row.exam_date || "11 October 2026",
+          examDate: row.exam_date || "25 October 2026",
           examCenter: row.exam_center || "Lakshya Academy Campus, Krishna Nagar, Mathura",
           status: row.status || "CONFIRMED",
           createdAt: row.created_at,
@@ -82,6 +83,7 @@ export async function POST(request: NextRequest) {
       parentName,
       phone,
       parentPhone: bodyParentPhone,
+      studentPhone,
       parentEmail,
       currentClass,
       school,
@@ -92,6 +94,7 @@ export async function POST(request: NextRequest) {
     } = body;
 
     const actualPhone = phone || bodyParentPhone;
+    const actualStudentPhone = studentPhone || "";
     const actualSchool = schoolName || school;
 
     if (!studentName || !parentName || !actualPhone || !currentClass) {
@@ -110,12 +113,14 @@ export async function POST(request: NextRequest) {
       parentName,
       parentPhone: actualPhone,
       phone: actualPhone,
+      studentPhone: actualStudentPhone,
       parentEmail: parentEmail || "",
       currentClass,
       class: currentClass,
       school: actualSchool || "Not specified",
       city: city || "Mathura",
-      gender: gender || "N/A",
+      gender: gender || (actualStudentPhone ? `SP:${actualStudentPhone}` : "N/A"),
+      examDate: examDate || "25 October 2026",
       createdAt: new Date().toISOString(),
       status: "CONFIRMED",
     };
@@ -135,27 +140,33 @@ export async function POST(request: NextRequest) {
       leadSource: "LTPE",
       status: "NEW",
       createdAt: new Date().toISOString(),
-      remarks: `LTPE Reg No: ${registrationNo}`,
+      remarks: `LTPE Reg No: ${registrationNo}, Date: ${examDate || "25 October 2026"}${actualStudentPhone ? `, Student Mobile: ${actualStudentPhone}` : ""}`,
     });
 
     // 2. Direct Supabase Storage (Permanent)
     try {
       const supabase = await createAdminClient();
-      await supabase.from("ltpe_registrations").insert([
-        {
-          registration_no: registrationNo,
-          student_name: studentName,
-          parent_name: parentName,
-          parent_phone: actualPhone,
-          parent_email: parentEmail || null,
-          current_class: currentClass,
-          school: actualSchool || null,
-          city: city || "Mathura",
-          gender: gender || null,
-          exam_date: examDate || "11 October 2026",
-          status: "CONFIRMED",
-        },
+      const baseSbRecord: any = {
+        registration_no: registrationNo,
+        student_name: studentName,
+        parent_name: parentName,
+        parent_phone: actualPhone,
+        parent_email: parentEmail || null,
+        current_class: currentClass,
+        school: actualSchool || null,
+        city: city || "Mathura",
+        gender: gender || (actualStudentPhone ? `SP:${actualStudentPhone}` : null),
+        exam_date: examDate || "25 October 2026",
+        status: "CONFIRMED",
+      };
+
+      const { error: insErr } = await supabase.from("ltpe_registrations").insert([
+        { ...baseSbRecord, student_phone: actualStudentPhone || null },
       ]);
+
+      if (insErr && insErr.code === "42703") {
+        await supabase.from("ltpe_registrations").insert([baseSbRecord]);
+      }
 
       await supabase.from("enquiries").insert([
         {
@@ -169,7 +180,7 @@ export async function POST(request: NextRequest) {
           interested_course: "LTPE Exam 2026",
           lead_source: "LTPE",
           status: "NEW",
-          remarks: `LTPE Reg No: ${registrationNo}, Date: ${examDate || "11 October 2026"}`,
+          remarks: `LTPE Reg No: ${registrationNo}, Date: ${examDate || "25 October 2026"}${actualStudentPhone ? `, Student Mobile: ${actualStudentPhone}` : ""}`,
         },
       ]);
     } catch (sbErr) {
@@ -204,7 +215,7 @@ export async function POST(request: NextRequest) {
           interestedCourse: "LTPE Exam 2026",
           leadSource: "LTPE",
           status: "NEW",
-          remarks: `LTPE Reg No: ${registrationNo}, Date: ${examDate || "11 October 2026"}`,
+          remarks: `LTPE Reg No: ${registrationNo}, Date: ${examDate || "25 October 2026"}${actualStudentPhone ? `, Student Mobile: ${actualStudentPhone}` : ""}`,
         },
       });
     } catch (dbError) {
@@ -261,6 +272,7 @@ export async function PUT(request: NextRequest) {
       school,
       city,
       status,
+      studentPhone,
       examDate,
     } = body;
 
@@ -276,7 +288,7 @@ export async function PUT(request: NextRequest) {
     // 1. Update in Supabase
     try {
       const supabase = await createAdminClient();
-      let query = supabase.from("ltpe_registrations").update({
+      const updateData: any = {
         student_name: studentName,
         parent_name: parentName,
         parent_phone: actualPhone,
@@ -285,9 +297,14 @@ export async function PUT(request: NextRequest) {
         school: school || null,
         city: city || "Mathura",
         status: status || "CONFIRMED",
-        exam_date: examDate || "11 October 2026",
+        exam_date: examDate || "25 October 2026",
         updated_at: new Date().toISOString(),
-      });
+      };
+      if (studentPhone) {
+        updateData.gender = `SP:${studentPhone}`;
+      }
+
+      let query = supabase.from("ltpe_registrations").update(updateData);
 
       if (id && id.length > 20) {
         query = query.eq("id", id);
@@ -311,11 +328,13 @@ export async function PUT(request: NextRequest) {
         parentName: parentName || memoryLtpeRegistrations[memIndex].parentName,
         parentPhone: actualPhone || memoryLtpeRegistrations[memIndex].parentPhone,
         phone: actualPhone || memoryLtpeRegistrations[memIndex].phone,
+        studentPhone: studentPhone || memoryLtpeRegistrations[memIndex].studentPhone,
         currentClass: currentClass || memoryLtpeRegistrations[memIndex].currentClass,
         class: currentClass || memoryLtpeRegistrations[memIndex].class,
         school: school || memoryLtpeRegistrations[memIndex].school,
         city: city || memoryLtpeRegistrations[memIndex].city,
         status: status || memoryLtpeRegistrations[memIndex].status,
+        examDate: examDate || memoryLtpeRegistrations[memIndex].examDate || "25 October 2026",
       };
     }
 

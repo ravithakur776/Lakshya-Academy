@@ -158,8 +158,8 @@ export const LTPE_2026_CONFIG = {
   name: "Lakshya Talent Promotional Exam 2026",
   tagline: "Win Up to 100% Scholarship for IIT-JEE Coaching",
   eligibility: "Classes 8, 9, 10",
-  examDate: "11 October 2026",
-  fee: "₹100",
+  examDate: "25 October 2026",
+  fee: "FREE",
   maxScholarship: "100%",
   benefits: [
     "Up to 100% Fee Waiver on Class 9, 10, 11 & 12 Batches",
@@ -174,11 +174,11 @@ export const LTPE_2026_CONFIG = {
     },
     {
       q: "What is the registration fee for LTPE 2026?",
-      a: "The registration fee for LTPE 2026 is nominal ₹100 only."
+      a: "Registration for LTPE 2026 is 100% Free."
     },
     {
       q: "When will LTPE 2026 be conducted?",
-      a: "The exam will be held on 11 October 2026 at Lakshya Academy's Krishna Nagar, Mathura center."
+      a: "The exam will be held on 25 October 2026 at Lakshya Academy's Krishna Nagar, Mathura center."
     },
     {
       q: "What is the exam pattern for LTPE?",

@@ -8,6 +8,7 @@ export interface AdmitCardCandidate {
   parentName: string;
   parentPhone: string;
   phone?: string;
+  studentPhone?: string;
   parentEmail?: string;
   currentClass: string;
   class?: string;
@@ -228,10 +229,10 @@ export async function buildAdmitCardPdf(candidate: AdmitCardCandidate): Promise<
   const fields: FieldRow[] = [
     { label: "Candidate's Full Name", value: (candidate.studentName || "N/A").toUpperCase() },
     { label: "Father's / Mother's Name", value: candidate.parentName || "N/A" },
-    { label: "Primary Contact (WhatsApp)", value: candidate.parentPhone || candidate.phone || "N/A" },
+    { label: "Parents Mobile (WhatsApp)", value: candidate.parentPhone || candidate.phone || "N/A" },
+    { label: "Student's Mobile No.", value: candidate.studentPhone || "N/A" },
     { label: "School Name", value: candidate.school || "School Not Specified" },
     { label: "City / District", value: candidate.city || "Mathura (U.P.)" },
-    { label: "Email Address", value: candidate.parentEmail || "Not Provided" },
   ];
 
   let currentY = detailsStartY + 3;
@@ -285,7 +286,7 @@ export async function buildAdmitCardPdf(candidate: AdmitCardCandidate): Promise<
   doc.text("Date of Examination:", schX, schY);
   doc.setTextColor(primaryGreen[0], primaryGreen[1], primaryGreen[2]);
   doc.setFontSize(8.5);
-  doc.text(candidate.examDate || "11 October 2026 (Sunday)", schX + 32, schY);
+  doc.text(candidate.examDate || "25 October 2026 (Sunday)", schX + 32, schY);
 
   schY += 6;
   doc.setTextColor(grayText[0], grayText[1], grayText[2]);
@@ -501,7 +502,7 @@ export function buildAdmitCardWhatsAppMessage(candidate: AdmitCardCandidate): st
   return (
     `*LAKSHYA ACADEMY — LTPE 2026 OFFICIAL ADMIT CARD*\n` +
     `Dear Parent, please find attached the official Admit Card for *${studentName}* (Roll No: *${candidate.registrationNo}*, ${className}).\n` +
-    `📅 Exam Date: 11 October 2026 (10:30 AM – 12:00 PM) | 🏢 Venue: Lakshya Academy, Krishna Nagar, Mathura`
+    `📅 Exam Date: 25 October 2026 (10:30 AM – 12:00 PM) | 🏢 Venue: Lakshya Academy, Krishna Nagar, Mathura`
   );
 }
 
