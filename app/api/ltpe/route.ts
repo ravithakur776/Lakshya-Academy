@@ -19,7 +19,7 @@ export async function GET() {
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (!sbError && sbData && sbData.length > 0) {
+      if (!sbError && Array.isArray(sbData)) {
         const formatted = sbData.map((row: any) => ({
           id: row.id,
           registrationNo: row.registration_no,
@@ -50,14 +50,16 @@ export async function GET() {
       console.warn("[GET /api/ltpe] Supabase read skipped:", sbErr);
     }
 
-    // 2. Try Prisma
+    // 2. Try Prisma only if not placeholder
     let dbData: any[] = [];
-    try {
-      dbData = await prisma.ltpeRegistration.findMany({
-        orderBy: { createdAt: "desc" },
-      });
-    } catch (e) {
-      // Safe DB fallback
+    if (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes("placeholder")) {
+      try {
+        dbData = await prisma.ltpeRegistration.findMany({
+          orderBy: { createdAt: "desc" },
+        });
+      } catch (e) {
+        // Safe DB fallback
+      }
     }
 
     const combined = [...memoryLtpeRegistrations, ...dbData];
@@ -164,8 +166,16 @@ export async function POST(request: NextRequest) {
         { ...baseSbRecord, student_phone: actualStudentPhone || null },
       ]);
 
-      if (insErr && insErr.code === "42703") {
-        await supabase.from("ltpe_registrations").insert([baseSbRecord]);
+      if (insErr) {
+        console.warn("[POST /api/ltpe] student_phone column unavailable in Supabase, saving with fallback:", insErr.message);
+        const { error: fbErr } = await supabase.from("ltpe_registrations").insert([baseSbRecord]);
+        if (fbErr) {
+          console.error("[POST /api/ltpe] Supabase fallback insert error:", fbErr);
+        } else {
+          console.log("[POST /api/ltpe] Saved successfully to Supabase with fallback record.");
+        }
+      } else {
+        console.log("[POST /api/ltpe] Saved successfully to Supabase!");
       }
 
       await supabase.from("enquiries").insert([
@@ -187,9 +197,10 @@ export async function POST(request: NextRequest) {
       console.warn("[POST /api/ltpe] Supabase insert fallback:", sbErr);
     }
 
-    // 3. Prisma DB write (if connected)
-    try {
-      await prisma.ltpeRegistration.create({
+    // 3. Prisma DB write (only if real database is configured)
+    if (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes("placeholder")) {
+      try {
+        await prisma.ltpeRegistration.create({
         data: {
           registrationNo,
           studentName,
@@ -218,8 +229,9 @@ export async function POST(request: NextRequest) {
           remarks: `LTPE Reg No: ${registrationNo}, Date: ${examDate || "25 October 2026"}${actualStudentPhone ? `, Student Mobile: ${actualStudentPhone}` : ""}`,
         },
       });
-    } catch (dbError) {
-      console.warn("[POST /api/ltpe] Prisma DB write skipped:", dbError);
+      } catch (dbError) {
+        console.warn("[POST /api/ltpe] Prisma DB write skipped:", dbError);
+      }
     }
 
     return NextResponse.json(

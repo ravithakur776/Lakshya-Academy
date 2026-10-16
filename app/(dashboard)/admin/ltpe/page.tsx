@@ -98,7 +98,7 @@ export default function LtpeAdminPage() {
           .select("*")
           .order("created_at", { ascending: false });
 
-        if (!sbErr && sbData && sbData.length > 0) {
+        if (!sbErr && Array.isArray(sbData)) {
           const formatted: LtpeRegistration[] = sbData.map((row: any) => ({
             id: row.id,
             registrationNo: row.registration_no,
@@ -777,22 +777,24 @@ export default function LtpeAdminPage() {
       {/* 1. VIEW DETAILS MODAL                                           */}
       {/* ═══════════════════════════════════════════════════════════════ */}
       {viewingItem && (
-        <div className="fixed inset-0 z-50 bg-gray-950/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in">
-          <div className="bg-white border border-emerald-100 rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden my-8">
+        <div className="fixed inset-0 z-50 bg-gray-950/70 backdrop-blur-xs overflow-y-auto p-4 sm:p-6 flex justify-center items-start animate-in fade-in">
+          <div className="bg-white border border-emerald-100 rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden my-6 sm:my-10 relative">
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-[#0F7A3C] to-[#0B5C2D] text-white p-6 flex items-start justify-between">
-              <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full">
+            <div className="sticky top-0 z-20 bg-gradient-to-r from-[#0F7A3C] to-[#0B5C2D] text-white p-5 sm:p-6 flex items-start justify-between gap-4 border-b border-emerald-600/30">
+              <div className="min-w-0 pr-2">
+                <span className="inline-block text-[10px] font-extrabold uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full">
                   Candidate Registration Details
                 </span>
-                <h3 className="text-2xl font-black font-heading mt-2">{viewingItem.studentName}</h3>
+                <h3 className="text-xl sm:text-2xl font-black font-heading mt-2 truncate">{viewingItem.studentName}</h3>
                 <p className="text-xs text-emerald-100 mt-0.5">
                   Class: <strong>{viewingItem.currentClass || viewingItem.class}</strong> • City: {viewingItem.city || "Mathura"}
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => setViewingItem(null)}
-                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors"
+                className="p-2.5 rounded-xl bg-white/20 hover:bg-white/30 active:bg-white/40 text-white transition-all cursor-pointer shrink-0 shadow-sm"
+                title="Close"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -963,19 +965,21 @@ export default function LtpeAdminPage() {
       {/* 2. EDIT DETAILS MODAL                                           */}
       {/* ═══════════════════════════════════════════════════════════════ */}
       {editingItem && (
-        <div className="fixed inset-0 z-50 bg-gray-950/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in">
-          <div className="bg-white border border-emerald-100 rounded-3xl max-w-xl w-full shadow-2xl overflow-hidden my-8">
-            <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white p-6 flex items-center justify-between">
-              <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full">
+        <div className="fixed inset-0 z-50 bg-gray-950/70 backdrop-blur-xs overflow-y-auto p-4 sm:p-6 flex justify-center items-start animate-in fade-in">
+          <div className="bg-white border border-emerald-100 rounded-3xl max-w-xl w-full shadow-2xl overflow-hidden my-6 sm:my-10 relative">
+            <div className="sticky top-0 z-20 bg-gradient-to-r from-amber-600 to-amber-700 text-white p-5 sm:p-6 flex items-start justify-between gap-4 border-b border-amber-500/30">
+              <div className="min-w-0 pr-2">
+                <span className="inline-block text-[10px] font-extrabold uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full">
                   Edit Candidate Record
                 </span>
-                <h3 className="text-xl font-black font-heading mt-2">Edit {editingItem.studentName}</h3>
+                <h3 className="text-xl font-black font-heading mt-2 truncate">Edit {editingItem.studentName}</h3>
                 <p className="text-xs text-amber-100 font-mono mt-0.5">Reg No: {editingItem.registrationNo}</p>
               </div>
               <button
+                type="button"
                 onClick={() => setEditingItem(null)}
-                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors"
+                className="p-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white transition-colors cursor-pointer shrink-0 shadow-sm"
+                title="Close"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -1168,8 +1172,8 @@ export default function LtpeAdminPage() {
       {/* 3. DELETE CONFIRMATION MODAL                                    */}
       {/* ═══════════════════════════════════════════════════════════════ */}
       {deletingItem && (
-        <div className="fixed inset-0 z-50 bg-gray-950/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in">
-          <div className="bg-white border border-rose-100 rounded-3xl max-w-md w-full shadow-2xl overflow-hidden p-6 space-y-5 my-8">
+        <div className="fixed inset-0 z-50 bg-gray-950/70 backdrop-blur-xs overflow-y-auto p-4 sm:p-6 flex justify-center items-start sm:items-center animate-in fade-in">
+          <div className="bg-white border border-rose-100 rounded-3xl max-w-md w-full shadow-2xl overflow-hidden p-6 space-y-5 my-6 sm:my-10 relative">
             <div className="w-14 h-14 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center mx-auto shadow-sm">
               <Trash2 className="h-7 w-7" />
             </div>
@@ -1221,8 +1225,8 @@ export default function LtpeAdminPage() {
       {/* 4. WHATSAPP ADMIT CARD PDF DELIVERY MODAL                       */}
       {/* ═══════════════════════════════════════════════════════════════ */}
       {whatsappModal && (
-        <div className="fixed inset-0 z-50 bg-gray-950/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in">
-          <div className="bg-white border border-emerald-100 rounded-3xl max-w-md w-full shadow-2xl overflow-hidden p-6 space-y-4 my-8">
+        <div className="fixed inset-0 z-50 bg-gray-950/70 backdrop-blur-xs overflow-y-auto p-4 sm:p-6 flex justify-center items-start sm:items-center animate-in fade-in">
+          <div className="bg-white border border-emerald-100 rounded-3xl max-w-md w-full shadow-2xl overflow-hidden p-6 space-y-4 my-6 sm:my-10 relative">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-[#25D366] text-white flex items-center justify-center shadow-md shadow-emerald-600/20">

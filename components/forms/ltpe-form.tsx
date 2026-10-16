@@ -20,8 +20,6 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-import { createClient } from "@/lib/supabase/client";
-
 export function LtpeForm() {
   const [registeredRegNo, setRegisteredRegNo] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
@@ -56,31 +54,6 @@ export function LtpeForm() {
       if (!res.ok) throw new Error(result.error || "Registration failed");
 
       const regNo = result.registrationNo || result.regNo || `LTPE26${Math.floor(1000 + Math.random() * 9000)}`;
-
-      // Dual-layer insurance: Direct client write to Supabase
-      try {
-        const supabase = createClient();
-        const baseSb = {
-          registration_no: regNo,
-          student_name: data.studentName,
-          parent_name: data.parentName,
-          parent_phone: data.phone,
-          current_class: data.currentClass,
-          school: data.schoolName,
-          city: data.city || "Mathura",
-          gender: data.studentPhone ? `SP:${data.studentPhone}` : null,
-          exam_date: "25 October 2026",
-          status: "CONFIRMED",
-        };
-        const { error: insErr } = await supabase.from("ltpe_registrations").insert([
-          { ...baseSb, student_phone: data.studentPhone },
-        ]);
-        if (insErr && insErr.code === "42703") {
-          await supabase.from("ltpe_registrations").insert([baseSb]);
-        }
-      } catch (clientErr) {
-        console.warn("[LtpeForm] Client Supabase sync handled:", clientErr);
-      }
 
       setRegisteredRegNo(regNo);
       reset();

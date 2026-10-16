@@ -193,10 +193,10 @@ export async function buildAdmitCardPdf(candidate: AdmitCardCandidate): Promise<
   // Status & Fee Badge
   doc.setFontSize(7.5);
   doc.setTextColor(grayText[0], grayText[1], grayText[2]);
-  doc.text("FEE STATUS:", margin + 140, stripY + 4.5);
-  doc.setFontSize(9);
+  doc.text("REGISTRATION FEE:", margin + 140, stripY + 4.5);
+  doc.setFontSize(8.5);
   doc.setTextColor(15, 122, 60);
-  doc.text("CONFIRMED (Rs. 100 PAID)", margin + 140, stripY + 10);
+  doc.text("FREE (CONFIRMED)", margin + 140, stripY + 10);
 
   // 5. Candidate Details & Photo Area
   const detailsStartY = stripY + stripHeight + 4;
